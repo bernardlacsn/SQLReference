@@ -1,0 +1,3900 @@
+-- using BULK Insert ; text file
+-- note in the text file exclude the column name only records itself
+-- sample records
+1,Lacson,Bernard,sdf
+2,Lacson,John,sdfsd
+3,Lacson,Aiah,sdfsad
+4,Lacson,Ronald,sdfsd
+5,Lacson,Janette,sdfsd
+
+-- command
+truncate dbo.Student 
+BULK INSERT dbo.Student
+FROM 'C:\Users\bernal\Desktop\Student.txt'	 --location with filename
+WITH ( FIELDTERMINATOR = ',', ROWTERMINATOR = '\n' )
+
+
+--- other way of bulk insert
+BULK INSERT [dbo].[ip2location_db24]							
+FROM 	'\\P51-KD01\Users\bernal\Desktop\BRL_SharedFolder\IP2Data.CSV'                 --- must be seen in the network	 							
+WITH							
+(							
+	FORMATFILE = '\\P51-KD01\Users\bernal\Desktop\BRL_SharedFolder\data.txt'       	--- must be seen in the network						
+)
+
+
+-- get the whole number and remainder ------- beg
+declare
+	@score_in_sec		numeric(9,2),
+	@score_remainder	float,
+	@const_divisor		int
+	
+select
+	@score_in_sec	= 551.56,		
+	@const_divisor	= 60
+
+-- get whole number
+	SELECT (cast(@score_in_sec as int) / @const_divisor)	-- 9	
+
+-- get Remainder
+ --select 
+   --cast((551.56 % 60.00) as int)  
+	select 
+	cast((@score_in_sec % @const_divisor) as int)  
+
+
+-- get the whole number and remainder ------- End
+
+
+--------------------------------------------------------------------------------------- 
+Constraint FOREIGN KEY :
+
+create table dbo.IDRReply
+(
+	Id					int identity(1,1), 
+	ScrapperRequestsId	int NOT NULL FOREIGN KEY REFERENCES  ScrapperRequests(Id),
+	ProcessStatus		varchar(50),	
+	OTP					varchar(50),
+	PhoneNo				varchar(50),
+	AccountNo			varchar(50),
+	ReferenceNo			varchar(50),
+	NATSSubject			nvarchar(max),
+	Discontinued		bit,
+	CreatedBy			varchar(50),
+	DateCreated			datetime,
+	ModifiedBy			varchar,
+	DateModified		datetime
+)
+
+------------------------------------------------------------------------------------------
+-- remove time in DateTime
+   cast(convert(char(11), End_Evaluation_Date, 113) as datetime) as End_Evaluation_Date,
+
+-------------------------------------------------------------------------------------------
+
+--- Using EXcel OpenRowset ---------------------- Beg
+ -- for 64bit
+ SELECT * FROM OPENROWSET('Microsoft.Jet.OLEDB.4.0','Excel 8.0;IMEX=1;HDR=NO;DATABASE=Z:\PesoConversion.xls ', 'Select * from [PesoConversionData$]')
+ 
+ -- for 32bit 
+ SELECT * FROM OPENROWSET('MICROSOFT.ACE.OLEDB.12.0','Excel 8.0;IMEX=1;HDR=NO;DATABASE=Z:\PesoConversion.xls ', 'Select * from [PesoConversionData$]')
+  
+-- run this if not working
+go
+sp_configure 'show advanced options',1  
+reconfigure with override  
+go  
+sp_configure 'Ad Hoc Distributed Queries',1  
+reconfigure with override  
+go
+
+--- Using EXcel OpenRowset ---------------------- End
+
+-- date format
+select convert(varchar(10), cast(ts as date), 111)
+
+-- remove the seconds ; get only the date + hh:mm
+select 
+	convert(varchar(10), cast('2014-08-26 23:59:59' as date), 111) + ' ' +  CONVERT( VARCHAR(5),CONVERT(datetime,'2014-08-26 23:59:59'),108)
+
+-- generate unique id using date --> 2017_12_07_14_39_05_227
+select 
+	replace(convert(varchar(10), cast(getdate() as date), 111),'/','_') + 
+	'_' +  Replace(convert(varchar(12),getdate(),114),':','_')
+
+
+sdfsadfsadfsdf
+JRA sadfasdfasdfasdfasdfsadf
+bernal sadfasdfs
+sad BernieSky1220$|fasdfasdfasdfasdf
+sadfasdfasdfsdfasdfsadfasdfsadfasdfasdfasdfasdfasfdasdf
+sdfsdfsdpppPassword : 3QUzJY!nO!CYdsXp  ==> pa change dito P@$$w0rdIOTP
+sdfasdfsadfsdfasdfasdfasdfasdfasdfasdfasdf
+
+------------------------------------------------------------------------
+select top 10 a.*, b.*
+	from
+	(
+		select
+			*
+		from interactionrc	with (nolock)
+		where interaction_type = 'TKSA'
+	) a
+	inner join
+	(
+		select
+			*
+		from interactionrc	with (nolock)
+		where interaction_type = 'WRITTENEXAMF'	
+	) b on
+		b.companyid			= a.companyid and
+		b.projectid			= a.projectid and
+		b.application_id	= a.application_id
+
+------------------
+
+SQL Site for learning --------------------------------
+
+* http://www.w3schools.com/sql/sql_check.asp
+
+SQL Site for learning --------------------------------
+
+
+GRANT EXEC ON dbo.fn_GetSubcategoryDesc2 TO taw_web_updater, cc60_1
+
+-------------------------
+
+--19 Aug 2013 00:00:00:000
+--substring(convert(char(11),convert(datetime,'8/19/2013'),113),1,2) + '-' + substring(convert(char(11),convert(datetime,'8/19/2013'),113),4,3) + '-' + substring(convert(char(11),convert(datetime,'8/19/2013'),113),8,4)   
+												
+
+-- PIVOT Date
+
+http://stackoverflow.com/questions/14624127/how-to-pivot-datetime-type-implementing-checks-based-on-date
+
+
+--- error trapping ----------------------------------
+
+BEGIN TRY
+    SELECT *
+        FROM sys.messages
+        WHERE message_id = 21;
+END TRY
+GO
+-- The previous GO breaks the script into two batches,
+-- generating syntax errors. The script runs if this GO
+-- is removed.
+BEGIN CATCH
+    SELECT ERROR_NUMBER() AS ErrorNumber;
+END CATCH;
+GO
+
+--- get list of table --------------------------------
+SELECT * FROM information_schema.tables
+--- get list of table --------------------------------
+
+-----------------------------------------------------
+
+ask date this format  Mon 01-07-13
+idate(ltrim(rtrim(right(t.PDT_Date,len(t.PDT_Date)-(PATINDEX('%[0-9]%',t.PDT_Date) - 1))))) = 0   
+
+/* convert to yyyymmdd --> 20121019
+
+declare
+	@eval_creation_date datetime
+
+select
+	@eval_creation_date = '10/19/2012 5:39:00 PM'
+	
+	
+select @eval_creation_date, convert(varchar(10),@eval_creation_date,112)
+
+*/
+
+
+-----------------------------------------------------------------------------------------------------------------------------------
+declare
+	@s		varchar(50)
+	
+select
+	@s = 'Corporate - Executive Office (C)'
+
+--select @s 
+
+
+select
+	rtrim(ltrim(substring(@s,1, CHARINDEX('-',@s ) - 1)))
+
+
+select
+	ltrim(rtrim(substring(@s,CHARINDEX('-',@s ) + 1,50)))
+	
+
+--- Creating VIEW Table ---------------------------------------------------------------------
+
+USE AdventureWorks2012 ;
+GO
+IF OBJECT_ID ('hiredate_view', 'V') IS NOT NULL
+DROP VIEW hiredate_view ;
+GO
+CREATE VIEW hiredate_view
+AS 
+SELECT p.FirstName, p.LastName, e.BusinessEntityID, e.HireDate
+FROM HumanResources.Employee e 
+JOIN Person.Person AS p ON e.BusinessEntityID = p.BusinessEntityID ;
+GO
+
+----
+-- with encryption
+
+USE AdventureWorks2012 ;
+GO
+IF OBJECT_ID ('Purchasing.PurchaseOrderReject', 'V') IS NOT NULL
+    DROP VIEW Purchasing.PurchaseOrderReject ;
+GO
+CREATE VIEW Purchasing.PurchaseOrderReject
+WITH ENCRYPTION
+AS
+SELECT PurchaseOrderID, ReceivedQty, RejectedQty, 
+    RejectedQty / ReceivedQty AS RejectRatio, DueDate
+FROM Purchasing.PurchaseOrderDetail
+WHERE RejectedQty / ReceivedQty > 0
+AND DueDate > CONVERT(DATETIME,'20010630',101) ;
+GO
+
+--- end Creating VIEW Table ---------------------------------------------------------------------
+
+
+--- Process ID Beg  --------------------------------------------------------------
+
+ SELECT @@SPID AS 'ID', SYSTEM_USER AS 'Login Name', USER AS 'User Name'
+
+--- Process ID End --------------------------------------------------------------
+
+
+-- Using Pivot --------------------------------------------------------------------------
+USE AdventureWorks2008R2 ;
+GO
+SELECT DaysToManufacture, AVG(StandardCost) AS AverageCost 
+FROM Production.Product
+GROUP BY DaysToManufacture;
+
+-- Result Set:
+DaysToManufacture          AverageCost
+
+0                          5.0885
+
+1                          223.88
+
+2                          359.1082
+
+4                          949.4105
+
+------------------
+
+-- Pivot table with one row and five columns
+SELECT 'AverageCost' AS Cost_Sorted_By_Production_Days, 
+[0], [1], [2], [3], [4]
+FROM
+(SELECT DaysToManufacture, StandardCost 
+    FROM Production.Product) AS SourceTable
+PIVOT
+(
+AVG(StandardCost)
+FOR DaysToManufacture IN ([0], [1], [2], [3], [4])
+) AS PivotTable;
+
+-- Result Set:
+
+Here is the result set.
+
+Cost_Sorted_By_Production_Days    0         1         2           3       4       
+
+AverageCost                       5.0885    223.88    359.1082    NULL    949.4105
+
+-- end using Pivot -----------------------------------------------------------------------
+
+-- update projectid ; get date manipulation -----------------------------------------------
+select	CONVERT(int,
+			convert(char(3),@tkprojectid) + 
+			rtrim(convert(char(2),month(convert(varchar(25),getdate(),112)))) + 
+			rtrim(convert(char(2),day(convert(varchar(25),getdate(),112)))) +
+			substring(rtrim(year(convert(varchar(25),getdate(),112))),3,2))
+		)
+
+-- update projectid ; get date manipulation -----------------------------------------------
+
+
+----  Copy from one database to another database -------	
+  -- syntax : select * into targetTable from [sourceserver].[sourcedatabase].[dbo].[sourceTable] 
+  ----> select * into PaySched from files2.eperformaxPayroll.dbo.PaySched
+
+
+--- using into ; without inserting data ; only the columns -----------
+IF OBJECT_ID('tempdb..#tmpAttendanceSanctions') IS NOT NULL
+		DROP TABLE #tmpAttendanceSanctions
+
+	SELECT	CONVERT(datetime,null) AS beg_violation_date,
+		CONVERT(datetime,null) AS end_violation_date,
+		CONVERT(INT,null) AS no_of_occurrences,
+		tasg.*,
+		CONVERT(CHAR(1),null) AS gravest_sanction_sw
+	INTO	#tmpAttendanceSanctions
+	FROM	#tmpAttendanceSanctionGrid tasg WITH (NOLOCK)
+	WHERE	1 = 2
+-- Revision v2.0 2011-Jul-11 by MMA - End
+
+
+---- comma parse ----------------------------------------
+if object_id('tempdb..#RptOption') is not null          
+	drop table #RptOption   
+
+create table #RptOption
+(
+	rpt_option	char(3)	
+)
+
+insert into #RptOption
+(
+	rpt_option
+)
+select 
+	col001 as rpt_option 
+from  dbo.fn_CSVParse(@rpt_option)          --(replace(ltrim(rtrim(@rpt_option)),' ','')) 
+
+
+---- coma parse ----------------------------------------
+
+
+ -- determine if there are duplicate & get the latest application	
+	if	(	select count(1)
+			from		 
+				(	
+					select
+						ap1.candidate_code
+					from #application ap1 with (nolock,index(ix_application_Candidate_Code))
+					where 
+						ap1.candidate_code <> ''
+					group by
+						ap1.candidate_code
+					having count(1) > 1
+				)x
+		) > 0
+	begin -- dup
+
+		if object_id('tempdb..#dupsfordeletion') is not null  
+			drop table #dupsfordeletion 
+	
+		create table #dupsfordeletion
+		(
+			Application_ID		int,
+		)	
+
+		create nonclustered index ix_dupsfordeletion_Application_ID
+			on #dupsfordeletion (Application_ID)
+	
+		insert into #dupsfordeletion
+		(
+			Application_ID
+		)
+		select
+			--ap1.candidate_code,
+			ap1.application_id
+		from #application ap1 with (nolock)
+		inner join 
+			(
+				select
+					ap3.candidate_code
+				from #application ap3 with (nolock,index(ix_application_Candidate_Code))
+				where 
+					ap3.candidate_code <> ''
+				group by
+					ap3.candidate_code
+				having count(1) > 1
+			) tmpDup
+			on
+			ap1.candidate_code = tmpDup.candidate_code
+		where 
+			--ap1.candidate_code = '152325' and
+			ap1.application_id not in (
+							select
+								max_app.application_id
+							from
+							(
+								select
+									ap4.candidate_code,
+									max(ap4.application_id)	as application_id
+								from #application ap4 with (nolock,index(ix_application_Candidate_Code))
+								where 
+									ap4.candidate_code <> ''
+								group by
+									ap4.candidate_code
+								having count(1) > 1
+								
+							) max_app	
+
+						)	
+
+
+
+		delete ap2
+		from #application ap2 
+		where
+			ap2.application_id in (select application_id from #dupsfordeletion with (nolock,index(ix_dupsfordeletion_Application_ID)))
+
+	end -- dup 
+
+
+---------------------------------------------------------------------------------------------------
+
+---- get minimum with duplicate records -----------------  beg
+
+select
+	--min(ap.application_id) as application_id,
+	ap_min.application_id,
+	ap.candidate_code
+from #application ap with (nolock,index(ix_application_Candidate_Code))
+inner join(
+
+				select
+					ap1.candidate_code,
+					min(ap1.application_id)	as application_id
+				from #application ap1 with (nolock,index(ix_application_Candidate_Code))
+				where 
+					ap1.candidate_code <> ''
+				group by
+					ap1.candidate_code
+				having count(1) > 1
+       ) ap_min	on
+	ap_min.candidate_code = ap.candidate_code and
+	ap_min.application_id = ap.application_id	
+
+---- get minimum with duplicate records -----------------  end
+
+--- get list of tables ---------------------------------- Beg
+SELECT *
+ FROM sys.Tables
+ order by name
+--- get list of tables ---------------------------------- End
+
+--select * from OEDashBoard2 with (nolock)
+--SELECT * FROM INFORMATION_SCHEMA.Columns where TABLE_NAME = 'OEDashBoard2' 
+--SELECT column_name FROM INFORMATION_SCHEMA.Columns where TABLE_NAME = 'OEDashBoard2' 
+--SELECT *
+--FROM sys.Tables  where name = 'xOEDashBoard2'
+--SELECT IsIdentity=COLUMNPROPERTY(id, name, 'IsIdentity') 
+  --              FROM syscolumns WHERE OBJECT_NAME(id) = 'OEDashBoard2' 
+
+
+ GRANT EXEC ON dbo.getInteractionScheduleByCandidateInteractionType TO taw_web_updater, cc60_1
+
+
+-- Verify that the stored procedure does not exist.
+IF OBJECT_ID ( N'usp_ExampleProc', N'P' ) IS NOT NULL 
+    DROP PROCEDURE usp_ExampleProc;
+GO
+
+-- Create a stored procedure that will cause an 
+-- object resolution error.
+CREATE PROCEDURE usp_ExampleProc
+AS
+    SELECT * FROM candidate
+GO
+
+BEGIN TRY
+    EXECUTE usp_ExampleProc;
+END TRY
+BEGIN CATCH
+    SELECT 
+        ERROR_NUMBER() AS ErrorNumber
+        ,ERROR_MESSAGE() AS ErrorMessage;
+END CATCH;
+
+
+--- displaying error messages when with error 
+
+if @errorvariable = 0
+	begin
+		commit transaction
+	end else
+	begin
+		rollback transaction			
+
+		select 
+			@ErrorVariable	as ErrorID,
+			text			as Error_Desc 
+		from sys.messages
+		where message_id = @ErrorVariable;
+	end
+
+
+--------------------------------------------------------------------------------
+
+
+
+----- delete with join table --------------------
+
+Delete a  from TableA a Inner Join TableB b on  a.BId = b.BId WHERE [filter condition] 
+
+
+----- delete with join table --------------------
+
+
+
+-- use of pivot ------------------------------Beg
+
+create table #tmp
+(
+	[name]		varchar(150),
+	color		varchar(50),
+	Quantity	int
+	
+)
+
+insert into #tmp
+(
+	[name],
+	color,
+	quantity	
+)
+select
+	'John'	as [name],
+	'White'		as color,
+	4			as quantity 
+
+insert into #tmp
+(
+	[name],
+	color,
+	quantity	
+)
+select
+	'Bernard'	as [name],
+	'Red'		as color,
+	3			as quantity 
+
+select
+	*
+from
+(
+	select
+		[name],
+		color,
+		quantity
+	from #tmp with (nolock)
+) as dt
+Pivot
+(
+	sum(quantity)
+	for color in
+	(
+		[red],[white]
+	)  
+) Pivottable
+
+
+---- settings for pivot
+If you are running SQL 2005 
+EXEC sp_dbcmptlevel 'myDatabaseName', 90
+
+If you are running SQL 2008 
+EXEC sp_dbcmptlevel 'myDatabaseName', 100
+
+New Syntax as of 02/26/2009:
+
+view sourceprint?
+1.ALTER DATABASE database_name  
+2.SET COMPATIBILITY_LEVEL = { 80 | 90 | 100 }
+
+
+-- use of pivot ------------------------------End
+
+------- exclude blank or Null ----------------------------------------
+
+
+len(isNUll(max_irc.disposition,'')) <> 0
+				or
+				max_irc.disposition <> ''
+				or
+				max_irc.disposition is not Null
+
+------- end exclude blank or Null ----------------------------------------
+
+-----select ALL --------------------------------------------
+if object_id('tempdb..#tmpListCode') is not null  
+    drop table #tmpListCode  
+
+select 
+	rtrim(subcategory_code) as listcode  
+into #tmpListCode  
+from valuemap with (nolock)  
+where 
+	companyid		= @companyid and  
+	projectid		= @projectid and  
+	category_code	= 'SourceFilename' and  
+	display_sw		= 'Y' and  
+	(  
+		(subcategory_code  in (select col001 from  dbo.fn_CSVParse(@listcode)) and   
+		 @listcode <> 'ALL'
+		 ) or  
+		(@listcode = 'ALL')  
+	) 
+
+
+/*  
+GRANT EXEC ON dbo.getTalktimeStats TO taw_web_updater, cc60_1  
+*/  
+
+
+--- date format -----------------------------------
+
+substring(convert(char(20),dbo.fn_cnvdatatodisplaydatetime(@companyid, @projectid, irc2.start_interaction_date)),1,11) Last_Date_Updated
+
+output : Jun 10 2010
+
+--- end date format -------------------------------
+
+
+---------- creating table w/c doesn't allow dup records to a specify columns ---------------- start
+
+create table tmpsky  
+(	 
+	candidate_code varchar(30), 
+	applicationid	varchar(30)
+) 
+Create unique index removeduplicates on tmpsky (candidate_code,applicationid) with IGNORE_DUP_KEY 
+--------- creating table w/c doesn't allow dup records to a specify columns ---------------- end
+
+
+----- error trapping ----------------------------------- start
+IF EXISTS(Select * from dbo.valuemap with (nolock)
+		where companyid=@companyid
+		and projectid=@projectid
+	        and category_code  = 'SHIFT' 
+	        and subcategory_code = @shiftcode)
+    BEGIN
+	RAISERROR('SHIFT CODE ALREADY EXISTS!',16, 1)
+	RETURN 
+    END
+----- error trapping ----------------------------------- end
+if object_id('tempdb..#tmpReportTypes') is not null  
+    drop table #tmpReportTypes  
+
+select 
+	rtrim(col001) as report_type  
+into #tmpReportTypes  
+from dbo.fn_csvparse(@rpt_option)  
+
+
+--select * from #tmpReportTypes
+
+
+
+----  using parse -----------------------------------------------------------------------------------------
+
+declare	@tmpleadtype table (								
+					lead_type	varchar(50)					
+				)							
+										
+	insert	into @tmpleadtype (									
+		lead_type									
+	)										
+	select	subcategory_code as lead_type									
+	from	valuemap vm with (nolock)									
+	where	companyid	= @companyid and								
+		projectid	= @projectid and								
+		category_code	= 'LeadType' and								
+		display_sw	= 'Y' and								
+		(									
+			subcategory_code	in (select col001 from dbo.fn_csvparse(@leadtype)) or							
+			@leadtype		= 'ALL'						
+		)									
+	
+
+
+
+----  end using parse -------------------------------------------------------------------------------------
+
+----- using cursor ----------------------------------------------------------------------------------------
+USE pubs
+declare @Auth_Last as varchar(30)
+DECLARE authors_cursor CURSOR FOR
+SELECT au_lname FROM authors WHERE au_lname LIKE 'B%'
+OPEN authors_cursor     -- Perform the first fetch.
+FETCH NEXT FROM authors_cursor into @Auth_Last 
+             -- Check @@FETCH_STATUS to see if there are any more rows to fetch.
+WHILE @@FETCH_STATUS = 0
+BEGIN        -- This is executed as long as the previous fetch succeeds.
+   SELECT @Auth_Last as Auth_Last   
+   FETCH NEXT FROM authors_cursor into @Auth_Last
+END
+CLOSE authors_cursor
+DEALLOCATE authors_cursor
+GO
+----- end using cursor --------------------------------------------------------------------
+  
+ Select @diff_days_app = datediff(day,@last_application_date,@application_date) 
+
+'------------------------------------------------------------------------------------------------
+/*  
+GRANT EXEC ON dbo.addCandidate_2 TO taw_web_updater, cc60_1  
+*/  
+
+var school_N_course_cod_processor;
+
+'--- csv parse -------------------------------------- 
+
+select col001 from dbo.fn_csvparse(@disposition)
+
+GRANT EXEC ON dbo.getCandidateContactDtlApplicationInteractionDetails_2 TO taw_web_updater, cc60_1
+
+'---- Using Date Convertion  -----------------------------------------------------------
+
+select convert(varchar(18),getdate(),101)
+-- 10/22/2008 (mm/dd/yyyy)
+
+select convert(varchar(18),getdate(),112)
+--20081022
+
+select convert(varchar(18),getdate(),100)
+--- Oct 22 2008  5:39A
+
+
+
+'---- Using Date Convertion  --------------------------------------------------------
+
+
+'-- using deep case when  -----------------------------------------  
+case 
+		when em.employee_num is not Null 
+		  then 	 		 	 		
+			case 
+		    		-- for undelete
+				when @delete_sw = 'U' and
+			       (
+				ihr.delete_sw <> 'Y' or ihr.delete_sw is Null
+				) then 'Record is not yet deleted' 
+			    	when @delete_sw = 'U' and 
+			      	(
+				ihr.delete_sw  = 'Y' 
+				) then 'Record can be undeleted'	
+			   -- for delete   
+			   	when @delete_sw = 'D' and
+			       (
+				ihr.delete_sw  =  'Y'
+				) then 'Record is already deleted' 
+			    	when @delete_sw = 'D' and
+			       (
+				ihr.delete_sw  <>  'Y' or ihr.delete_sw is Null
+			       ) then 'Record can be deleted' 
+			  end	
+	         else 'No Records Found'  		
+	 end as 'Record_Status'  	
+
+
+ or 
+
+ case     
+   when accessgroup is null or len(accessgroup) = 0     
+   then   
+       case  
+          when usr.userid is not null  
+            then 'No'  
+        else 'Login ID does not exists'  
+           end  
+   else 'Yes'    
+   end as 'With_Access_YesNo'  
+
+
+'-- using deep case when  -----------------------------------------
+
+
+'--- proper case -----------------------------
+
+CREATE FUNCTION dbo.pCase 
+( 
+    @strIn VARCHAR(255) 
+) 
+RETURNS VARCHAR(255) 
+AS 
+BEGIN 
+    IF @strIn IS NULL 
+        RETURN NULL 
+ 
+    DECLARE 
+        @strOut VARCHAR(255), 
+        @i INT, 
+        @Up BIT, 
+        @c VARCHAR(2) 
+ 
+    SELECT 
+        @strOut = '', 
+        @i = 0,  
+        @Up = 1 
+ 
+    WHILE @i <= DATALENGTH(@strIn) 
+    BEGIN 
+        SET @c = SUBSTRING(@strIn,@i,1) 
+        IF @c IN (' ','-','''') 
+        BEGIN 
+            SET @strOut = @strOut + @c 
+            SET @Up = 1 
+        END 
+        ELSE 
+        BEGIN 
+            IF @up = 1 
+                SET @c = UPPER(@c) 
+            ELSE 
+                SET @c = LOWER(@c) 
+ 
+            SET @strOut = @strOut + @c 
+            SET @Up = 0 
+        END 
+        SET @i = @i + 1 
+    END 
+    RETURN @strOut 
+END 
+GO
+
+-- testing
+SELECT 
+    dbo.pCase('bill o''reilly'), 
+    dbo.pCase('bill van der wal'), 
+    dbo.pCase('mr. moseley-williams'), 
+    dbo.pCase('Joe VanWyck')
+
+'--- proper case -----------------------------
+
+'---- creating index on temp table ------------------------------
+
+create index [ix_tmpValuemap_category_subcategory_code] on [#tmpValuemap] ([category_code],[subcategory_code])
+
+ if object_id('tempdb..#emp') is not null  
+	drop table #emp  
+	
+ create table #emp(
+	[id] 		int identity(1,1),	  
+	emp_num  	char(20)
+  )	   
+ 
+  
+ create index ix_Emp_employee_num on #emp(emp_num)
+
+
+'---- to count the tmpDownloadTmp/for checking --------------------------------------------------------
+SELECT     COUNT(1) AS Count_DownloadedRec, call_disposition_date
+FROM         dbo.tmpdownloadtmp
+WHERE     (Batch_ID = '217_080323_080329_01') AND (call_disposition_date = '20080325')
+GROUP BY call_disposition_date
+
+
+---- get the carriage return value  in a records ------------------------------------------------
+
+--1.Create table with adds column
+Attn. Purchasing  Biggy Corporation  123 Some Street
+
+create table a(adds varchar(100))
+
+--2.Insert value as you described
+insert into a select 'Attn. Purchasing
+Biggy Corporation
+123 Some Street'
+
+select * from a
+
+--3.Seperate it to 3 lines
+declare @no1 int
+set @no1= (select charindex(char(13),adds) from a)
+declare @no2 int
+set @no2 =(select charindex(char(13),adds,charindex(char(13),adds)+1) from a)
+
+select rtrim(left(adds,@no1-1)) as [address1:],rtrim(ltrim(substring(adds,@no1+1,@no2-@no1))) as [address2:],ltrim(rtrim(right(adds,len(adds)-@no2-1))) as [address3:] from a
+
+
+--- or this way ---------------------
+
+select rtrim(left(adds,charindex(char(13),adds)-1)) as [address1:],
+rtrim(ltrim(substring(adds,charindex(char(13),adds)+1,charindex(char(13),adds,charindex(char(13),adds)+1)-charindex(char(13),adds)))) as [address2:],
+ltrim(rtrim(right(adds,len(adds)-charindex(char(13),adds,charindex(char(13),adds)+1 )-1))) as [address3:] from a
+
+---- end get the carriage return value  in a records ------------------------------------------------
+
+---- replace double string occurence ------------------------------------------------------------------------------
+ ex. s,s,,,s, ---> s,s,s
+
+  set @tmp_vm_accessgrp = left(replace(@tmp_vm_accessgrp,' ,',' '), len(replace(@tmp_vm_accessgrp,' ,',' ')) - 1)
+
+---- replace double string occurence ------------------------------------------------------------------------------
+
+
+---- copying table from one database to another database ------------------
+
+
+–Switch Context to target database
+
+Use TestDB  —Use Target database name here
+
+Go
+
+–Create required schema in target database
+
+Create Schema Purchasing
+
+Go
+
+–Switch Context to Source Database
+
+Use AdventureWorks
+
+Go
+
+—Following statement copies the table from source to target database
+
+Select *
+
+into TestDB.Purchasing.Vendor
+
+ from Purchasing.Vendor
+
+ 
+---- copying table from one database to another database ------------------
+
+
+--- drop column -------------------------------------------------------------------------- 
+
+  ALTER TABLE table_name 
+  DROP COLUMN column_name
+  ex.  ALTER TABLE [sales_fact_20000101]  
+      drop column [sample]
+
+  alter table candidate alter column College_Yr_Level char(20)
+
+--- add column -------------------------------------------------------------------------- 
+ 
+  ALTER TABLE Person ADD City varchar(30)
+  ALTER TABLE dbo.MessageReceiveHistory 
+	ADD		Discontinued	 bit,
+			CreatedBy		int,
+			DateCreated		datetime,
+			ModifiedBy		int,
+			DateModified	datetime
+
+------- using union all --------------------------------------------------------------------
+
+-- Create the fact table for 1999
+CREATE TABLE [dbo].[sales_fact_19990101] (
+   [date_key] [int] NOT NULL 
+CHECK ([date_key] BETWEEN 19990101 AND 19991231),
+   [product_key] [int] NOT NULL ,
+   [customer_key] [int] NOT NULL ,
+   [promotion_key] [int] NOT NULL ,
+   [store_key] [int] NOT NULL ,
+   [store_sales] [money] NULL ,
+   [store_cost] [money] NULL ,
+   [unit_sales] [float] NULL 
+) 
+
+ALTER TABLE [sales_fact_19990101]
+ADD PRIMARY KEY ([date_key], [product_key], [customer_key], [promotion_key], [store_key])
+;
+
+-- Create the fact table for 2000
+CREATE TABLE [dbo].[sales_fact_20000101] (
+   [date_key] [int] NOT NULL 
+CHECK ([date_key] BETWEEN 20000101 AND 20001231),
+   [product_key] [int] NOT NULL ,
+   [customer_key] [int] NOT NULL ,
+   [promotion_key] [int] NOT NULL ,
+   [store_key] [int] NOT NULL ,
+   [store_sales] [money] NULL ,
+   [store_cost] [money] NULL ,
+   [unit_sales] [float] NULL 
+) 
+
+ALTER TABLE [sales_fact_20000101]
+ADD PRIMARY KEY ([date_key], [product_key], [customer_key], [promotion_key], [store_key])
+;
+
+--Create the UNION ALL view. 
+CREATE VIEW [dbo].[sales_fact] 
+AS
+SELECT * FROM [dbo].[sales_fact_19990101] 
+UNION ALL
+SELECT * FROM [dbo].[sales_fact_20000101]
+
+--Now insert a few rows of data, for example:
+INSERT INTO [sales_fact]
+VALUES (19990126, 348, 8903, 2, 14, 5.3100, 1.8585, 3.0)
+
+INSERT INTO [sales_fact]
+VALUES (19990324, 576, 7203, 0, 13, 2.1000, 0.9450, 3.0)
+
+INSERT INTO [sales_fact]
+VALUES (19990604, 139, 7203, 0, 13, 5.3700, 2.2017, 3.0)
+
+INSERT INTO [sales_fact]
+VALUES (20000914, 396, 8814, 0, 13, 6.4800, 2.0736, 2.0)
+
+INSERT INTO [sales_fact]
+VALUES (20001113, 260, 8269, 0, 13, 5.5200, 2.4840, 3.0)
+
+'------- end using union all ----------------------------------------------------------------
+
+CREATE FUNCTION whichContinent 
+(@Country nvarchar(15))
+RETURNS varchar(30)
+AS
+BEGIN
+declare @Return varchar(30)
+select @return = case @Country
+when 'Argentina' then 'South America'
+when 'Belgium' then 'Europe'
+when 'Brazil' then 'South America'
+when 'Canada' then 'North America'
+when 'Denmark' then 'Europe'
+when 'Finland' then 'Europe'
+when 'France' then 'Europe'
+else 'Unknown'
+end
+
+return @return
+end
+
+
+print dbo.WhichContinent('USA')
+
+select dbo.WhichContinent(Customers.Country), customers.* 
+from customers
+
+create table test
+(Country varchar(15),
+ Continent as (dbo.WhichContinent(Country)))
+
+insert into test (country) 
+values ('USA')
+
+select * from test
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Country          Continent
+---------------  ------------------------------
+USA              North America
+
+
+
+'---- creating in line table function ------------------------------------------------
+
+ * return value table
+
+CREATE FUNCTION CustomersByContinent 
+(@Continent varchar(30))
+RETURNS TABLE 
+AS
+RETURN 
+  SELECT dbo.WhichContinent(Customers.Country) as continent,
+         customers.*
+  FROM customers
+  WHERE dbo.WhichContinent(Customers.Country) = @Continent
+GO
+
+ SELECT * from CustomersbyContinent('North America')
+ SELECT * from CustomersByContinent('South America')
+ SELECT * from customersbyContinent('Unknown')
+
+'---- end creating in line table function ------------------------------------------------
+
+ 
+'---- creating in multi statement table function ------------------------------------------------
+
+CREATE FUNCTION dbo.customersbycountry ( @Country varchar(15) )
+RETURNS 
+	@CustomersbyCountryTab table (
+		[CustomerID] [nchar] (5), [CompanyName] [nvarchar] (40), 
+		[ContactName] [nvarchar] (30), [ContactTitle] [nvarchar] (30), 
+		[Address] [nvarchar] (60), [City] [nvarchar] (15),
+		[PostalCode] [nvarchar] (10), [Country] [nvarchar] (15), 
+		[Phone] [nvarchar] (24), [Fax] [nvarchar] (24)
+	)
+AS
+BEGIN
+	INSERT INTO @CustomersByCountryTab 
+	SELECT 	[CustomerID], 
+			[CompanyName], 
+			[ContactName], 
+			[ContactTitle], 
+			[Address], 
+			[City], 
+			[PostalCode], 
+			[Country], 
+			[Phone], 
+			[Fax] 
+	FROM [Northwind].[dbo].[Customers]
+	WHERE country = @Country
+	
+	DECLARE @cnt INT
+	SELECT @cnt = COUNT(*) FROM @customersbyCountryTab
+	
+	IF @cnt = 0
+		INSERT INTO @CustomersByCountryTab (
+			[CustomerID],
+			[CompanyName],
+			[ContactName],
+			[ContactTitle],
+			[Address],
+			[City],
+			[PostalCode],
+			[Country], 
+			[Phone],
+			[Fax]  )
+		VALUES ('','No Companies Found','','','','','','','','')
+	
+	RETURN
+END
+GO
+SELECT * FROM dbo.customersbycountry('USA')
+SELECT * FROM dbo.customersbycountry('CANADA')
+SELECT * FROM dbo.customersbycountry('ADF')
+
+'---- end creating in multi statement table function ------------------------------------------------
+
+http://www.sswug.org/sswugtv
+Login ID: sky_brl2003@yahoo.com
+Password: awesv9mu
+'----------------------------------------------------------------------------------------------------
+
+'Insert Record
+Begin Transaction 
+
+		Insert into tblusers
+			Select
+				 Rtrim(@tmpUser)
+				,Rtrim(@Password)
+			    ,Rtrim(@Lastname)
+    				,Rtrim(@Firstname)
+		        ,Rtrim(@Middlename)
+
+			IF @@ERROR <> 0
+				Begin
+					ROLLBACK TRANSACTION
+					RETURN @@ERROR
+				End
+			IF @@ERROR = 0
+				Begin
+					COMMIT TRANSACTION
+					RETURN @@ERROR
+
+				End
+				
+'-------------------------------------------------------------------------------------------------------
+
+'----  Edit Records
+	Update tblUsers Set
+                  User_Name = Rtrim(@tmpUser)
+	        ,[Password] = Rtrim(@Password)
+			,Lastname = Rtrim(@Lastname)
+			,Firstname = Rtrim(@Firstname)
+			,Middlename = Rtrim(@Middlename)
+			where User_Name = @tmpUsername		
+			
+'--------------------------------------------------------------------------------------------------------
+ 
+ "-- Delete Records 
+   Delete from tblUsers
+		Where User_Name  = Rtrim(@tmpUser) 	
+					
+			
+'--------------------------------------------------------------------------------------------------------
+'-- Using Right Join to find records 
+
+•	Select command to find records present in Join  tblStoreMasterList b  but not in 
+   tblStoresBuy a
+
+SELECT 
+   b.storecode,b.storename 
+FROM tblStoresBuy a  
+Right Join tblStoreMasterList b  ON 
+  a.StoreCode = b.StoreCode 
+Where a.storecode Is Null
+
+-------------------------------------------------------
+
+'--- Using Cast and set ---------------------------------------------	
+	 Select @InternetRate = Internet_Rate_PerHr FROM tblRateInternet
+   Set @InternetMinuteRate = (@InternetMinuteRate/60)          
+			--    Print CAST(@InternetRate AS VARCHAR(18))           
+	
+-------------------------------------------------------
+
+'-- Using Date Between -------
+ Select * from tblConsume
+ where Transaction_Date Between @DateFrom and @DateTo	
+
+-------------------------------------------------------
+
+-- Using Convert -----------------------
+ Rtrim(convert(char(15),@Cnt)			
+ Set @CurrentDate = RTrim(Convert(varchar(16),getdate(),101))   -- mm/dd/yyyy
+ 
+-----------------------------------------
+
+'--- using replicate
+ set @trans_count = REPLICATE('0', 10-LEN(@Cnt)) + Rtrim(convert(char(15),@Cnt)) 
+ 
+'--- USing like ----------------------------------------- 
+ Select Student_ID, Lastname,Firstname,Middlename 
+ From tblStudent				
+ Where Student_ID Like Rtrim(@SearchValue) + '%'
+ 
+ 
+'--- Using select and insert into tmptable with auto no as primary key ------
+  
+ 	IF OBJECT_ID('tempdb..#tmpLogs') IS NOT NULL
+				DROP TABLE #tmpLogs
+				
+				SELECT 
+					Identity(int,1,1)	as autono
+					,*
+					INTO #tmpLogs
+					FROM tblMachineLogin
+	
+	
+'--- Using round and Substring ----------------------------------------	
+			
+Select
+ 		st.Student_ID,
+		st.Lastname + ', ' + st.Firstname + ' ' + Substring(st.middlename,1,1) + '.' as [Name],
+        gr.Term,
+		Substring(RTrim(Convert(varchar(10),round(gr.Quiz1,2))),1,5) as [Quiz1],   --gr.Quiz1,
+		Substring(RTrim(Convert(varchar(10),round(gr.Quiz2,2))),1,5) as [Quiz2],   --gr.Quiz2,
+		Substring(RTrim(Convert(varchar(10),round(gr.Quiz3,2))),1,5) as [Quiz3],   --gr.Quiz3,
+		Substring(RTrim(Convert(varchar(10),round(gr.Quiz4,2))),1,5) as [Quiz4],   -- gr.Quiz4,
+		Substring(RTrim(Convert(varchar(10),round(gr.Average,2))),1,5) as [Average]
+	From tblGrade gr
+	Inner join tblStudent st
+	on st.Student_ID = gr.Student_ID						
+					
+'----------------------------------------------------------------------------
+
+'--- Creating Permanent Table -----------------------------------------------
+ CREATE TABLE [TempPages] (
+    [SessionID] [varchar] (24)  NOT NULL ,
+    [RecordNo] [int] NOT NULL ,
+    [User_ID] [int] NOT NULL 
+ ) ON [PRIMARY]
+ GO
+
+CREATE TABLE doc_exe ( column_a INT CONSTRAINT column_a_un UNIQUE) 
+'--- End Creating Permanent Table ------------------------------------------
+
+'--- Creating Primary key and Index field -----------------------------------
+	ALTER TABLE [TempPages] WITH NOCHECK ADD 
+    CONSTRAINT [PK_TempPages] PRIMARY KEY  CLUSTERED 
+    (
+        [SessionID],   -- this is the primary key ; must be unique
+        [RecordNo]     --  index only 
+    )  ON [PRIMARY] 
+
+ GO
+
+'--- End Creating Primary key and Index field -----------------------------------
+
+'--- Using Left Join and insert into temp table -----------------------------------
+ 
+    Select 
+	    b.HeadingName	
+         Into #Match
+         From #XlsFinalRef a
+         Left Join ( 
+			   Select 
+                  HeadingName
+                  From #BapCo  		
+ 		     )b 
+          On a.HeadingName = b.HeadingName
+          where b.HeadingName is not Null 
+
+   Use pubs 	
+
+   SELECT T.title_id, T.title, S.qty
+   FROM titles T
+   LEFT JOIN sales S on
+	T.title_id = S.title_id
+   WHERE S.stor_id = '7131'
+   ORDER BY T.title
+
+   '... this is the best way   
+
+    SELECT T.title_id, T.title, S.qty
+    FROM titles T
+    LEFT JOIN sales S on
+	 T.title_id = S.title_id
+	 AND S.stor_id = '7131'
+    ORDER BY T.title
+
+
+'--- End Left Join and insert into temp table -----------------------------------
+
+
+'-- Creating Stored Procedure  ------------------------------------
+
+			IF OBJECT_ID('dbo.spStudentsInfo') IS NOT NULL
+			BEGIN
+			    DROP PROCEDURE dbo.spStudentsInfo
+			    IF OBJECT_ID('dbo.spStudentsInfo') IS NOT NULL
+			        PRINT '<<< FAILED DROPPING PROCEDURE dbo.spStudentsInfo >>>'
+			    ELSE
+			        PRINT '<<< DROPPED PROCEDURE dbo.spStudentsInfo >>>'
+			END
+			go
+			
+			CREATE PROCEDURE spStudentsInfo(
+				     @mode				varchar(25)
+				)
+			AS
+			
+			BEGIN
+			
+					Set Nocount On
+			
+					IF @mode = 'student_info'
+						Begin
+							Select * from  tblStudentsInfo
+						End
+							
+			
+			END
+			
+			go
+			IF OBJECT_ID('dbo.spStudentsInfo') IS NOT NULL
+			    PRINT '<<< CREATED PROCEDURE dbo.spStudentsInfo >>>'
+			ELSE
+			    PRINT '<<< FAILED CREATING PROCEDURE dbo.spStudentsInfo >>>'
+			go
+
+
+'-- End Creating Stored Procedure  ------------------------------------
+
+'-- Dropping temporary table -------------------------------------------
+
+ IF OBJECT_ID('tempdb..#tmpLogs') IS NOT NULL
+				DROP TABLE #tmpLogs
+
+'-- End Dropping temporary table -------------------------------------------
+
+
+'-- Creating temporary table with auto no -------------------------------------------
+
+ IF OBJECT_ID('tempdb..#XlsFinalRef') IS NOT NULL
+	 DROP TABLE #XlsFinalRef
+
+	CREATE TABLE #XlsFinalRef (
+	 [ID] 				int identity(1,1)
+	,PageNo				varchar(4)    	
+	,HeadingName		varchar(150)
+	  )					
+
+'-- End Creating temporary table ------------------------------------------
+					
+'-- Using Sum   -----------------------------------------------------------
+
+    Declare  @strDate as varchar(25)
+     Set @strDate = convert(datetime,Rtrim('05/05/2007'))	
+
+   Select Sum(MSU) as TotalOfftake from tblOfftake
+      Where (Prod_Code = '82005999' or Prod_Code = '82006000')
+	      and Cov_week = '05/05/2007'	   		
+ 		
+'-- End Using Sum   -----------------------------------------------------------
+
+'--- Dir Command save into tmp table ------------------------------------------
+
+    DECLARE @Path varchar(200)
+    DECLARE @Query varchar(1000)
+
+    SET @Path = '\\B5T571S\Fusion\Data'   
+
+    IF OBJECT_ID('tempdb..#temp_files') IS NOT NULL
+		DROP TABLE #temp_files
+
+	CREATE TABLE #temp_files (
+		[File]	varchar(100)
+		)
+
+  	SET @Query = 'Insert into #temp_files EXEC master.dbo.xp_cmdshell ' + '''DIR *.xla /ON ' +  @Path + ''''
+    EXEC(@Query)
+
+    -- Select * from #temp_files  
+
+  
+  '--... get the filename only
+  
+     IF OBJECT_ID('tempdb..#files') IS NOT NULL
+	         DROP TABLE #files
+
+			SELECT
+				IDENTITY(int,1,1)				as [ID]  
+			   , SUBSTRING([File], 40, 20)		as [File]
+				INTO #files
+				FROM #temp_files
+				WHERE ISDATE(LEFT([File], 10)) = 1
+			    	AND SUBSTRING([File], 25, 5) <> '<DIR>'
+  
+     -- Select * from #files
+  
+  
+   '... using bulk insert after getting the file name
+   
+				While @minCtr <=  @MaxCtr
+					Begin
+			
+						 DECLARE @Path varchar(200)
+			    	 DECLARE @Query varchar(1000)
+						 Declare @FilePath varchar(100)
+						 Declare @filename varchar(100)
+			
+			   
+					    SET @Path = '\\B5T571S\Fusion\Data'   
+			
+			
+						 Select @filename = [File]   		
+						   	From #files
+							where ([ID]) = @minCtr   	   	
+			
+							If Rtrim(@filename) = 'SMIS.txt'
+							   
+								Begin
+							   		
+									Set @FilePath = @Path + '\' + @filename
+								  	
+									IF OBJECT_ID('tempdb..#temp_smis') IS NOT NULL
+										DROP TABLE #temp_smis
+				
+									CREATE TABLE #temp_smis (
+										Data				varchar(1000)
+										)
+								
+									
+									SET @Query ='BULK INSERT #temp_smis FROM "'+ @FilePath + 
+										'" WITH ( ROWTERMINATOR = ''\n'' )'
+								    EXEC(@Query)
+			
+			
+									Select * from #temp_smis 
+			
+							   
+							   End		
+			
+						 set @minCtr =  @minCtr + 1
+					End
+					 		
+					 		
+		'... or this way to bulk insert 
+		IF OBJECT_ID('tempdb..#rates') IS NOT NULL
+		  DROP TABLE #rates
+
+   	CREATE TABLE #rates (
+		    AdCategory		varchar(12)
+	   	, UDAC			varchar(12)
+	   	, Amount		numeric(18,2)
+	  	)
+	
+			SET @Query ='BULK INSERT #rates FROM "'+ @RateFile + 
+				'" WITH ( FIELDTERMINATOR = ''|'', ROWTERMINATOR = ''\n'', KEEPIDENTITY )'
+
+	   EXEC(@Query)
+
+					 		
+'--- End Dir Command save into tmp tables ------------------------------------------
+
+
+'--- Using CHARINDEX to find the Integer Position of a character -----------
+
+  Declare @sample as varchar(25)
+   Set @sample = 'Bernie'
+   
+   Select CHARINDEX('e',@sample) as car
+
+
+declare 
+	@i int, 
+	@f decimal(8, 2) 
+
+select 
+	@i = 353532, @f = 100022.23
+	select    substring(convert(varchar, convert(money, @i), 1),1, charindex('.',convert(varchar, convert(money, @i), 1))- 1)
+
+
+
+  -- this returns --> 2
+
+'--- Using CHARINDEX to find the Integer Position of a character -----------
+
+
+'--- Using PATINDEX to find the Integer Position of a character -----------
+
+   Declare @sample as varchar(25)
+    Set @sample = 'Bernie'
+   
+    Select PATINDEX ('Ber%',@sample) as car 	 
+
+  -- this returns --> 1
+
+'--- Using PATINDEX to find the Integer Position of a character -----------
+
+
+'---- to create index ---------------------------------- 
+  SET NOCOUNT OFF
+   USE pubs
+  IF EXISTS (SELECT name FROM sysindexes 
+      WHERE name = 'au_lname_ind')
+   DROP INDEX authors.au_id_ind
+  GO
+  USE pubs
+  CREATE INDEX au_lname_ind
+   ON authors (au_lname)
+  GO
+'---- to create index ----------------------------------
+
+'--- Create a logical backup device for the full MyNwind backup.----------------
+ This example creates a logical backup device in which a full backup of the 
+   MyNwind database is placed.
+  
+  USE master
+  EXEC sp_addumpdevice 'disk', 'MyNwind_1', 
+   DISK ='c:\Program Files\Microsoft SQL Server\MSSQL\BACKUP\MyNwind_1.dat'
+
+ -- Back up the full MyNwind database.
+  BACKUP DATABASE MyNwind TO MyNwind_1
+
+'-----------------------------------------------------------------------------------
+
+'---- Backup command ---------------------------------------------------------------
+
+ -- Steps in Creating  a Back-up to hard-disk  
+  
+  '.... steps in backing-up database, always include the log files .................
+  1. Full Back-up first  
+   Backup Database Enterprise
+    	to Disk = N'C:\Database_Backup\Enterprise.bak'
+   With Noinit,Name= N'Pubs.Bak',stats= 10
+
+  Backup Database Enterprise
+  	to Disk = N'C:\Database_Backup\Enterprise.bak'
+  With Noinit, Differential,Name= N'Pubs.Bak',stats= 10
+	
+  Backup Log Enterprise
+     To Disk = N'C:\Database_Backup\EnterpriseTran.bak'
+  With Noinit,Name= N'Pubs.Bak',stats= 10
+  
+  '.... End steps in backing-up database .................
+     
+   1)
+     Use Master
+      Exec sp_addumpdevice 'disk','enterprise_1','c:\Database_Backup\enterprise_1.dat'
+  	Go	
+  
+ --2)Full Back-up   
+     Backup Database Enterprise to enterprise_1
+       with Init
+     Go
+ 
+ --3.)Differential Back-up    
+    Backup Database Enterprise to enterprise_1
+     with Differential
+    Go
+
+
+  -- BACKUP DATABASE northwind 
+   TO DISK = 'd:\backups\northwind\nwind.bak'
+
+
+  BACKUP DATABASE Northwind 
+   TO DISK = 'D:\backups\nwind\nwind_diff.bak'
+  WITH DIFFERENTIAL
+
+
+  Backup Database Pubs
+   to disk = N'C:\folder\Pubs.bak'
+  With NoInit, Name = N'Pubs.Bak', stats=10
+  
+  Backup Database Pubs
+   to disk = N'C:\folder\Pubs.bak'
+  With NoInit, Differential,|Name = N'Pubs.Bak', stats=10
+
+  '... Or this way 
+		  Backup Database Pubs
+		    To Disk = N'C:Program Files\Microsoft\Pubsdiff.bak'
+		  With Noinit, Differential,|Name= N'Pubs.Bak',stats= 10
+		  
+		  
+		  Backup Log Pubs
+		     To Disk = N'C:Program Files\Microsoft\PubsTran.bak'
+		  With Noinit,Name= N'Pubs.Bak',stats= 10
+
+
+ -- Steps in Creating  a Back-up to tape drive
+  -- This example adds the TAPEDUMP1 device with the physical name \\.\Tape0.
+       USE master
+       EXEC sp_addumpdevice 'tape', 'tapedump1', '\\.\tape0'
+
+'---- End Backup command ---------------------------------------------------------------
+
+'---- Restoring of  Back-up Files ------------------------------------------------------
+ 
+ '... steps in restoring back-up database .................. 
+  --1. Restore the full back-up with recovery  
+    
+    Use master
+    Restore Database Enterprise
+      From Disk = N'C:\Database_Backup\Enterprise.bak'
+     With Recovery
+
+   --2. Restore the differential and the updated log
+    Use Master
+     RESTORE DATABASE Enterprise 
+       FROM Disk = 'C:\Database_Backup\Enterprise.bak' WITH NORECOVERY
+     RESTORE LOG Enterprise
+      FROM Disk = 'C:\Database_Backup\EnterpriseTran.bak' WITH RECOVERY
+    ,stats = 25
+ 
+  '... end steps in restoring back-up database ..................
+
+  -- Restore full back-up 
+   RESTORE DATABASE MyNwind
+     FROM MyNwind_1
+   WITH NORECOVERY
+ 
+  '-- or this way , or you can remove with recovery
+   RESTORE DATABASE MyNwind
+    FROM MyNwind_1
+    With Recovery 
+ 
+  -- Restore differential Back-up 
+  RESTORE DATABASE MyNwind
+    FROM MyNwind_1
+     WITH FILE = 2
+   
+  -- Here is the RESTORE RESTART operation.
+   RESTORE DATABASE MyNwind 
+     FROM MyNwind_1 WITH RESTART
+
+  -- Restore command with stop at specific data
+  RESTORE LOG MyNwind
+    FROM MyNwindLog2
+     WITH RECOVERY, STOPAT = 'Apr 15, 1998 12:00 AM'
+
+ -- Restoring from tape syntax 
+  RESTORE DATABASE MyNwind 
+    FROM TAPE = '\\.\tape0'
+
+ -- using filegroup
+  RESTORE DATABASE cust_part
+    FILEGROUP = 'Customers2'
+    FROM DISK='g:\cust.dmp'
+     WITH FILE=1,NORECOVERY,PARTIAL,
+     MOVE 'cust' TO 'g:\cu2.pri',
+     MOVE 'cust_log' TO 'g:\cu2.log',
+     MOVE 'cust_data_2' TO 'g:\cu2.dat2'
+ 
+  RESTORE DATABASE Customer
+     FILE = 'Customerdata_1',
+     FILE = 'Customerdata_2',
+     FILEGROUP = 'Primary
+    FROM Customer_1
+      WITH NORECOVERY
+   RESTORE LOG Customer
+    FROM CustomerLog1
+
+ Restore FileListonly
+   From Disk = 'C:\Database_Backup\enterprise_diff.bak'
+ GO
+
+ RESTORE LOG cust_part
+   FROM DISK = 'g:\cust.dmp'
+   WITH FILE = 2,RECOVERY
+ GO
+
+  RESTORE DATABASE PUBS FROM PUBS_BACKUP
+    WITH MOVE 'pubs' TO 'D:\pubs.mdf',
+     FILE = 3,
+     STANDBY = 'd:\standby.dat',
+     STATS = 25
+
+'---- Restoring Back-up Files ----------------------------------------------------------
+
+'--- Configure Automatic Recovery ------------------------------------------------------
+
+ Exec sp_configure 'Recovery Interval',3
+ Go
+ Reconfigure with Override
+ Go
+	   
+'----- Create Database -----------------------------------------------------------------
+
+ create database test
+ on (filename = 'F:\mssql7\data\test_data.mdf')
+ log on (filename = 'F:\mssql7\data\test_log.ldf')
+ FOR ATTACH
+
+'----- End Create Database ------------------------------------------
+
+'----- Detach DB    ------------------------------------------
+  Exec sp_detach_db 'test'
+  Go
+'----- End Detach DB    ------------------------------------------
+
+'--- Using Count ------------------------------------------------- 
+  USE pubs
+   SELECT COUNT(*), AVG(price)
+ FROM titles
+ WHERE advance > $1000
+ 
+ '... Result
+   USE pubs
+    SELECT COUNT(*), AVG(price)
+   FROM titles
+   WHERE advance > $1000
+
+'--- End Using Count -------------------------------------------------
+
+'--- Using Distinct  ------------------------------------------------- 
+
+	USE pubs
+   SELECT DISTINCT au_id
+  FROM titleauthor
+  
+  '...or this way  
+  SELECT AVG(DISTINCT price)
+    FROM titles
+  WHERE type = 'business'
+
+'--- End Using Distinct  ------------------------------------------------- 
+
+'--- Using Having count to display the field with duplicate records ------
+  
+  SELECT au_id
+   FROM titleauthor
+    group by au_id
+   Having Count(*) >1
+
+
+CREATE TABLE #tempduplicatedata
+(
+lngCompanyID INTEGER 
+,strCompanyName VARCHAR(20)
+,strAddress VARCHAR(10)
+,dtmModified DATETIME
+)
+
+--Identify and save dup data into temp table
+INSERT INTO #tempduplicatedata
+SELECT * FROM tDupData
+GROUP BY lngCompanyID,strCompanyName,strAddress, dtmModified
+HAVING COUNT(*) > 1
+
+--Confirm number of dup rows
+SELECT @@ROWCOUNT AS 'Number of Duplicate Rows'
+
+--Delete dup from original table
+DELETE FROM tDupData 
+FROM tDupData
+INNER JOIN #tempduplicatedata
+ON  tDupData.lngCompanyID = #tempduplicatedata.lngCompanyID
+AND tDupData.strCompanyName = #tempduplicatedata.strCompanyName
+AND tDupData.strAddress = #tempduplicatedata.strAddress
+AND tDupData.dtmModified = #tempduplicatedata.dtmModified
+
+--Insert the delete data back
+INSERT INTO tDupData
+SELECT * FROM #tempduplicatedata
+
+--Check for dup data.
+SELECT * FROM tDupData
+GROUP BY lngCompanyID,strCompanyName,strAddress,dtmModified
+HAVING COUNT(*) > 1
+
+
+
+
+
+'--- End Using Having count to display the field with duplicate records -------
+
+'--- Delete Duplicate Records ----------------------------------------
+
+  create table marxBrothers (
+    ident int IDENTITY,
+    Name varchar(32)
+)
+go
+
+insert marxBrothers (Name)
+    select 'Groucho Marx' UNION ALL
+    select 'Harpo Marx' UNION ALL
+    select 'Chico Marx' UNION ALL
+    select 'Groucho Marx' UNION ALL
+    select 'Harpo Marx' UNION ALL
+    select 'Chico Marx' UNION ALL
+    select 'Groucho Marx' UNION ALL
+    select 'Harpo Marx' UNION ALL
+    select 'Chico Marx' UNION ALL
+    select 'Groucho Marx' UNION ALL
+    select 'Harpo Marx' UNION ALL
+    select 'Chico Marx' UNION ALL
+    select 'Zeppo Marx' UNION ALL
+    select 'Gummo Marx' UNION ALL
+    select 'Zeppo Marx'
+  
+   select * from marxBrothers
+
+  Delete marxBrothers
+   Where ident > (
+    Select min(ident)
+    From marxBrothers m
+    Where m.name = marxBrothers.name)
+  
+  select * from marxBrothers
+
+    
+
+
+  drop table marxBrothers
+
+ '.... design table to avoid duplicate records in name fld.....  
+  .... this create a primary key to name field  
+   create table marxBrothers (
+     ident      int IDENTITY,
+     name       varchar(32),
+     constraint PK_marxBrothers 
+   PRIMARY KEY (name)
+  )
+ go
+
+ '.... design table to avoid duplicate records in name fld.....  
+
+
+
+   '... other way 
+   'Deleting All But Not the Most Current Record
+ 
+   delete from a
+   from cust_tran a 
+  join 
+     (
+	select 	cust_id, 
+		max(tran_date) 
+		max_tran_date 
+       from cust_tran 
+       group by 
+	   cust_id 
+       having count(*) > 1
+     ) b
+  	on a.cust_id = b.cust_id and 
+        a.tran_date < b.max_tran_date
+
+
+  '.... or this way .............
+   
+   alter table vehicles 
+     add seq_num int identity
+   go
+   delete from a
+   
+   From vehicles a join 
+     (select make, model, color, max(seq_num) max_seq_num from vehicles 
+             group by make, model, color
+             having count(*) > 1) b
+      on a.make = b.make and 
+         a.model = b.model and
+         a.color = b.color and 
+         a.seq_num < b.max_seq_num
+  go 
+   alter table vehicles
+   drop column seq_num
+
+
+  '... or this way
+    create table #vehicles (make  char(10), 
+                        model char(10), 
+                        color char(10))
+    insert into #vehicles select * from vehicles
+    truncate table vehicles
+    insert into vehicles select distinct * from #vehicles
+    
+    drop table #vehicles
+
+'--- End Delete Duplicate Records ----------------------------------------   
+
+'--- Using Case When -----------------------------------------------------   
+
+		SELECT a.DeptCode DeptCode,
+		a.Type Type,
+		a.ExpenseUnit / ( CASE WHEN a.Type = 'FYTD' THEN b.volume
+		WHEN a.Type = 'Budget' THEN
+		c.volume
+		WHEN a.Type = 'Target' THEN
+		d.volume
+		ELSE 1 END ) AS Expense
+		From calc1 a
+		LEFT JOIN FYTDData d ON b.type = a.type
+		LEFT JOIN BudgetData d ON c.type = a.type
+		LEFT JOIN TargetData d ON d.type = a.type
+
+ '... or this way
+  currently I am creating a total if the date is between two entered dates:
+
+     select 
+     sum(case when exigo_data_sync.orders.orderdate 
+          between @prevMonthStart and @prevMonthEnd then 1 else 0 end)
+        as PrevMonthCount,
+
+'--- End Using Case When -----------------------------------------------------
+
+'--- Getting the Column name of the table ------------------------------------
+
+  SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_NAME = 'authors'
+    
+  '.. or this way 
+  
+   sp_help authors    
+    
+       
+'--- End Getting the Column name of the table ------------------------------------
+
+ 
+'---- Save text files into table or tmp tables -----------------------------------
+  
+  CREATE TABLE #file (
+   line varchar(255) null
+   );
+
+  INSERT #file EXEC master..xp_cmdshell 'type c:\boot.ini'; 
+  -- select * from #file 
+ 
+ '... to get the no of lines from text files
+   
+    SELECT count(*) AS NumLines FROM #file
+ 
+
+
+
+'---- End Save text files into table ot tmp tables ----------------------------------- 
+ 
+'----Format Numbers with comma and 2 digits after decimal point --------------
+  
+  declare @i int, @f decimal(8, 2) 
+  select @i = 353532, @f = 100022.23
+  select convert(varchar, convert(money, @i), 1) as "Formatted Int",
+	
+	convert(varchar, convert(money, @f), 1) as "Formatted Float"
+	
+
+'----End Format Numbers with comma and 2 digits after decimal point --------------
+
+'--- Transposing Columns into Fields using Cube ---------------------------------------------
+ 
+ create table #Person (personID int, FirstName varchar(20), LastName varchar(20),
+ Phone varchar(12), Age int)
+
+insert #Person values(1, 'first1', 'last1', 'phone1', 1)
+insert #Person values(2, 'first2', 'last2', 'phone2', 2)
+
+Select case when 
+	grouping(personid) = 0 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 1
+		then 'PersonID'
+	when 
+	grouping(personid) = 1 And Grouping(firstname) = 0 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 1
+		then 'FirstName'
+	when 
+	grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 0 And grouping(phone) = 1 And
+	Grouping(age) = 1
+		then 'LastName'
+	when 
+	grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 0 And
+	Grouping(age) = 1
+		then 'Phone'
+	when 
+	grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 0
+		then 'Age'
+	end as FieldName,
+	case when 
+	grouping(personid) = 0 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 1
+		then ltrim(str(personid))
+	when 
+	grouping(personid) = 1 And Grouping(firstname) = 0 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 1
+		then firstname
+	when 
+	grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 0 And grouping(phone) = 1 And
+	Grouping(age) = 1
+		then LastName
+	when 
+	grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 0 And
+	Grouping(age) = 1
+		then Phone
+	when 
+	grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 0
+		then Ltrim(Str(Age))
+	end as FieldValue
+from #Person 
+group by personid, firstname, lastname, phone, age
+with cube
+having (grouping(personid) = 0 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 1)
+	or
+	(grouping(personid) = 1 And Grouping(firstname) = 0 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 1)
+	or
+	(grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 0 And grouping(phone) = 1 And
+	Grouping(age) = 1)
+	or
+	(grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 0 And
+	Grouping(age) = 1)
+	or
+	(grouping(personid) = 1 And Grouping(firstname) = 1 And 
+	Grouping(lastname) = 1 And grouping(phone) = 1 And
+	Grouping(age) = 0)
+
+ '--- End Transposing Columns into Fields --------------------------------------------- 
+
+'---- Creating Pivot Table ----------------------------------------------------
+ 
+  create table #tb (record_id int, obj_id char(4), reference char(10))
+
+  insert #tb values(1, 'Btn1', 'forward')
+  insert #tb values(1, 'Btn2', 'backward')
+
+  select record_id, min(case when obj_id = 'btn1' then reference end) as btn1,
+	                  min(case when obj_id = 'btn2' then reference end) as btn2
+   from #tb
+   group by record_id
+
+  
+  '... another way of  pivot ...............
+  
+   UserID      UserName   UserPassword  QuestionText  Answer                                                                                               
+ ----------- ---------- ------------- ------------- ----------------
+          1 User101    abc123        FirstName     John
+          1 User101    abc123        Address       111 Main Street
+          1 User101    abc123        City          New York
+          1 User101    abc123        State         NY
+*/
+-- Expected Output:
+
+  UserID      UserName   UserPassword  FirstName  LastName  Address           City      State                                                                                                
+----------- ---------- ------------- ---------- --------- ----------------- --------- ------
+          1 User101    abc123        John       NULL      111 Main Street   New York  NY
+  
+   SELECT u.UserID , u.UserName , u.UserPassword ,
+       MIN( CASE q.QuestionText WHEN 'FirstName' THEN a.Answer END ) AS FirstName ,
+       MIN( CASE q.QuestionText WHEN 'LastName' THEN a.Answer END ) AS LastName ,
+       MIN( CASE q.QuestionText WHEN 'Address' THEN a.Answer END ) AS Address ,
+       MIN( CASE q.QuestionText WHEN 'City' THEN a.Answer END ) AS City ,
+       MIN( CASE q.QuestionText WHEN 'State' THEN a.Answer END ) AS State
+  FROM #Users AS u
+  JOIN #UserAnswers As a
+  ON u.UserID = a.UserID
+  JOIN #Questions q
+  ON q.QuestionID = a.QuestionID
+  GROUP BY u.UserID , u.UserName , u.UserPassword
+  ORDER BY u.UserName;
+
+  
+  '... other sample 
+ 
+   SELECT Year, 
+     SUM(CASE Quarter WHEN 1 THEN Amount ELSE 0 END) AS Q1,
+     SUM(CASE Quarter WHEN 2 THEN Amount ELSE 0 END) AS Q2,
+     SUM(CASE Quarter WHEN 3 THEN Amount ELSE 0 END) AS Q3,
+     SUM(CASE Quarter WHEN 4 THEN Amount ELSE 0 END) AS Q4
+   FROM Northwind.dbo.Pivot
+   GROUP BY Year
+   GO
+
+   SELECT P1.*, (P1.Q1 + P1.Q2 + P1.Q3 + P1.Q4) AS YearTotal
+    FROM (SELECT Year,
+             SUM(CASE P.Quarter WHEN 1 THEN P.Amount ELSE 0 END) AS Q1,
+             SUM(CASE P.Quarter WHEN 2 THEN P.Amount ELSE 0 END) AS Q2,
+             SUM(CASE P.Quarter WHEN 3 THEN P.Amount ELSE 0 END) AS Q3,
+             SUM(CASE P.Quarter WHEN 4 THEN P.Amount ELSE 0 END) AS Q4
+    FROM Pivot AS P
+    GROUP BY P.Year) AS P1
+
+
+   '... other sample
+	
+	SELECT YEAR(ord.OrderDate) YEAR,  
+            SUM(CASE prod.CategoryID WHEN 1 THEN 
+                 det.UnitPrice * det.Quantity ELSE 0 END) Beverages,  
+            SUM(CASE prod.CategoryID WHEN 2 THEN   
+                 det.UnitPrice * det.Quantity ELSE 0 END) Condiments,
+            SUM(CASE prod.CategoryID WHEN 3 THEN             
+                 det.UnitPrice * det.Quantity ELSE 0 END) Confections,      
+            SUM(CASE prod.CategoryID WHEN 4 THEN      
+                det.UnitPrice * det.Quantity ELSE 0 END) [Dairy Products],
+            SUM(CASE prod.CategoryID WHEN 5 THEN
+                det.UnitPrice * det.Quantity ELSE 0 END) [Grains/Cereals],
+            SUM(CASE prod.CategoryID WHEN 6 THEN
+                det.UnitPrice * det.Quantity ELSE 0 END) [Meat/Poultry],
+            SUM(CASE prod.CategoryID WHEN 7 THEN 
+                det.UnitPrice * det.Quantity ELSE 0 END) Produce,
+            SUM(CASE prod.CategoryID WHEN 8 THEN                    
+                det.UnitPrice * det.Quantity ELSE 0 END) Seafood 
+         FROM Orders ord INNER JOIN  [Order Details] det
+         ON det.OrderID = ord.OrderID INNER JOIN  Products prod
+         ON prod.ProductID = det.ProductID
+         GROUP BY YEAR(ord.OrderDate)
+         ORDER BY YEAR(ord.OrderDate)
+
+'---- Creating Pivot Table ----------------------------------------------------
+
+
+'---- Using trigger ----------------------------------------------------  
+	
+		CREATE TABLE TestTbl( Col1 int );
+		go
+		CREATE TRIGGER ConditionalTrigger
+		ON TestTbl
+		FOR INSERT
+		AS
+		IF OBJECT_ID( 'tempdb..#dont_fire' ) IS NOT NULL
+		        RETURN;
+		
+		PRINT 'Performing trigger logic...';
+		go
+		
+		-- Test SP
+		CREATE PROCEDURE InsTestTblRow
+		AS
+		CREATE TABLE #dont_fire  ( DummyCol int );
+		INSERT INTO TestTbl values ( 11 );
+		go
+		
+		INSERT INTO TestTbl values ( 1 );   '..this call the trigger .... 
+		-- Don't fire trigger when inserting via SP
+		EXEC InsTestTblRow;
+		go
+		DROP PROC InsTestTblRow;
+		DROP TABLE TestTbl;
+		GO
+ 
+'---- End Using trigger ----------------------------------------------------   
+  
+'---- Using case When & Remove dirty Characters from a numeric string ------------------------
+ ... This tanggal ang letters from numeric value  
+   
+   declare @dirty varchar( 6 )
+   select @dirty = '120-dd'
+    
+    select convert( int , 
+         case when substring( @dirty , 1 , 1 ) LIKE '[0-9]' then substring( @dirty , 1 , 1 ) else '' end +
+         case when substring( @dirty , 2 , 1 ) LIKE '[0-9]' then substring( @dirty , 2 , 1 ) else '' end +
+         case when substring( @dirty , 3 , 1 ) LIKE '[0-9]' then substring( @dirty , 3 , 1 ) else '' end +
+         case when substring( @dirty , 4 , 1 ) LIKE '[0-9]' then substring( @dirty , 4 , 1 ) else '' end +
+         case when substring( @dirty , 5 , 1 ) LIKE '[0-9]' then substring( @dirty , 5 , 1 ) else '' end +
+         case when substring( @dirty , 6 , 1 ) LIKE '[0-9]' then substring( @dirty , 6 , 1 ) else '' end 
+    ) AS NumericValueOnly
+ 
+'---- End Remove dirty Characters from a numeric string ------------------------ 
+ 
+'---- Creating User Defined Functions ------------------------------------------  
+
+ IF OBJECT_ID('dbo.spFuncDateOnly') IS NOT NULL
+	BEGIN
+	    DROP Function dbo.spFuncDateOnly
+	    IF OBJECT_ID('dbo.spFuncDateOnly') IS NOT NULL
+	        PRINT '<<< FAILED DROPPING Function dbo.spFuncDateOnly >>>'
+	    ELSE
+	        PRINT '<<< DROPPED Function dbo.spFuncDateOnly >>>'
+	END
+	go	
+ 
+					 CREATE FUNCTION dbo.spFuncDateOnly(@InDateTime datetime)
+					
+					  RETURNS varchar(10)
+					 AS
+						
+						BEGIN
+							DECLARE @MyOutput varchar(10)
+							SET @MyOutput = CONVERT(varchar(10),@InDateTime,101)
+							RETURN @MyOutput
+						END
+
+	go
+	IF OBJECT_ID('dbo.spFuncDateOnly') IS NOT NULL
+	    PRINT '<<< CREATED Function dbo.spFuncDateOnly >>>'
+	ELSE
+	    PRINT '<<< FAILED CREATING Function dbo.spFuncDateOnly >>>'
+	go
+
+'--- to Call -->  SELECT dbo.DateOnly(GETDATE()) as datetoday
+ 
+ 
+'---- End Creating User Defined Functions ------------------------------------------  
+
+'---- Using BCP Command ------------------------------------------------------------  
+
+ '... Example text file --> The Newpubs.dat file:
+ '... to be imported into Pubs Database under publisher table     
+   
+   Newpubs.dat
+    1111,Stone Age Books,Boston,MA,USA
+    2222,Harley & Davidson,Washington,DC,USA
+    3333,Infodata Algosystems,Berkeley,CA,USA
+
+  'excute this command at the command prompt
+    'datafile type = "char"
+    'field terminator = ","
+    'row terminator = "\n" 
+   
+   '.... text file to table comma separated   
+     bcp pubs..publishers2 in newpubs.dat -c -t , -r \n -Sservername -Usa -Ppassword
+
+    BULK INSERT pubs..publishers2 FROM 'c:\newpubs.dat'
+    WITH (
+       DATAFILETYPE = 'char',
+       FIELDTERMINATOR = ',',
+       ROWTERMINATOR = '\n'
+      )
+
+   '....  table to text file , ~ <-- separated 
+     bcp pubs..publishers2 out newpubs.dat -c -t ~ -r \n -Sservername -Usa -Ppassword 
+  
+
+  '--- using global temporary table 
+     bcp ##temp_authors out temp_authors.txt -c -Sservername -Usa -Ppassword
+
+
+   '.... bcp command to run in query analyzer ..........
+    '... table to text files comma separated    
+      Declare @filename varchar(300)
+      Declare @bcpCommand varchar(300)
+      Declare @sqlcommand varchar(300)
+      Declare @dblquote char(2) 
+      Declare @qryout char(12)
+      declare @strComSep char(3) 
+      Declare @singleQuote char(1)
+      Declare @Usr_N_Pwd char(75) 
+      Declare @strParam char(20)
+
+      set @singleQuote = char(39)
+      set @dblquote = char(34)
+
+      set @bcpCommand = 'bcp'
+      set @sqlcommand = '"Select * from pubs..authors"'
+      set @qryout = ' queryout'
+
+      set @filename =  'c:\temp\a1.txt'
+      set @strComSep =  ' , ' 
+      set @strParam = '-c -t'
+      set @Usr_N_Pwd = '-r \n -SB5T571S -Usa -Ptrinity' 
+
+      set @bcpCommand = Rtrim(@bcpCommand)+ ' ' +  Rtrim(@sqlcommand) + Rtrim(@qryout) + ' ' + @filename +  ' ' +  Rtrim(@strParam) + @strComSep + Rtrim(@Usr_N_Pwd)
+
+      select @bcpCommand
+      EXEC master.dbo.xp_cmdshell @bcpCommand
+
+
+      
+     '... or this way ..................   
+    	
+    	DECLARE @cmd varchar(500)
+	 	  SET @cmd = 'master..xp_cmdshell ' + @sqoute + 'bcp tempdb.##NotFoundHeadings out \\' + HOST_NAME() + '\KE_SHARE\HeadingError.txt -c -S asecasiadev -U sa -P morpheus' + @sqoute	
+		  PRINT @cmd
+		  EXEC(@cmd)
+
+
+'---- End Using BCP Command ------------------------------------------------------------ 
+ 
+'--- get all the name of data base  ----------------------------------------
+
+   EXEC sp_databases 
+
+'--- end get all the name of data base  ---------------------------------------- 
+ 
+
+'--- Get the top 10 highest value ----------------------------------------------
+  
+  ... Retrieve top 10 highest-paid employees
+  
+  SELECT e.title, e.lastname, e.firstname, e.salary
+  FROM Employees 
+  ORDER BY e.salary DESC
+  LIMIT 10
+
+  ... Use prepared statements for paging
+    SELECT * FROM Employees ORDER BY e.lastname LIMIT ?, 50
+
+  '... or this way ......... 
+   
+    SELECT 
+       PERSON
+      ,SCORE
+     FROM SAMPLETABLE XXX
+     WHERE 10 >(
+                SELECT COUNT(*)
+                 FROM SAMPLETABLE
+                 WHERE SCORE > XXX.SCORE )
+
+
+'--- end Get the top 10 highest value ----------------------------------------------  
+
+'--- using case else ---------------------------------------------------------------  
+
+  drop table #tmpArrangeMonth 
+
+  Select 
+     MonthName,
+     case MonthName
+       when 'Jan' then 1
+       when 'Feb' then 2
+       when 'Mar' then 3
+       when 'Apr' then 4
+       when 'May' then 5
+       when 'June' then 6
+       when 'July' then 7 
+	     when 'Aug' then 8	
+       when 'Sep' then 9
+	     when 'Oct' then 10
+	     when 'Nov' then 11
+	     else  12 end as 'SortID'
+   into #tmpArrangeMonth    
+   from tblMonth 
+  
+    select * from  #tmpArrangeMonth
+    order by sortid       
+
+
+'--- end using case else ---------------------------------------------------------------
+
+'--- using format the integer with comma -----------------------------------------------
+
+   SELECT CAST(CONVERT(varchar, CAST(8888 AS money), 1) AS varchar) as 'number'
+
+  ... function 
+		 
+		  CREATE FUNCTION dbo.spFuncIntegerWithComma(@tmpInteger integer)
+			
+			  RETURNS varchar(25)
+		
+			 AS
+				
+				BEGIN
+					DECLARE @MyOutput varchar(15)
+		
+					Set @MyOutput = CAST(CONVERT(varchar, CAST(@tmpInteger AS money), 1) AS varchar)
+		            Set @MyOutput = SUBSTRING(@MyOutput,1,LEN(@MyOutput)-3)  			
+		
+					RETURN RTrim(@MyOutput)
+		
+		     END
+
+'--- end using format the integer with comma -------------------------------------------
+
+
+'--- copy table from one database to another .... -------------------------------------------
+
+  Select * into employees from Northwind.dbo.employees
+  
+  note : select the datase to be updated , where northwind is the updated database.
+
+'--- end copy table from one database to another .... -------------------------------------------
+
+'--- importing text files into table --------------------------------------------------
+
+  'this is comma separated value, save to table ImportTest
+   bcp dbo.ImportTest in 'C:\ImportData.txt' -T -SserverName\instanceName  
+ 
+  BULK INSERT dbo.ImportTest 
+  FROM 'C:\ImportData.txt' 
+  WITH ( FIELDTERMINATOR =',', FIRSTROW = 2 )
+
+  INSERT INTO dbo.ImportTest 
+  SELECT * FROM OPENROWSET('Microsoft.Jet.OLEDB.4.0', 
+  'Excel 8.0;Database=C:\ImportData.xls', [Sheet1$]) 
+
+
+'--- end importing text files into table --------------------------------------------------
+
+
+'--- Using Correlated Subqueries  --------------------------------------------------
+
+ USE pubs
+ SELECT DISTINCT au_lname, au_fname
+ FROM authors
+ WHERE 100 IN
+   (SELECT royaltyper
+   FROM titleauthor
+   WHERE titleauthor.au_id = authors.au_id)
+
+ The above subquery in this statement cannot be evaluated independently of the outer query. 
+ It needs a value for authors.au_id, but this value changes as Microsoft® SQL Server™ examines different rows in authors.
+
+ USE pubs
+ SELECT distinct pub_name
+ FROM publishers
+ WHERE pub_id IN
+   (SELECT pub_id
+   FROM titles
+   WHERE type = 'business')
+
+ USE NORTHWIND
+
+ -- we declare our table variable first 
+
+ Declare @SpecialCustomers TABLE (
+ CustomerID nchar (5) NOT NULL ,
+ OrderID int NOT NULL ,
+ ShipVia int NOT NULL,
+ Freight money NOT NULL)
+
+ -- now we populate the in-memory table variable with the record information needed for the update
+
+ Insert into @SPecialCustomers select CustomerID, OrderID, ShipVia, Freight 
+ From dbo.Orders where ShipVia =1 AND Freight >50.25
+
+-- and finally we update the affected records in our regular orders table with our new shipper and price information, 
+-- using the @SpecialCustomers TABLE variable just as we would a real, physical table in the database:
+
+ UPDATE ORDERS SET ShipVia=4, Freight =21.00
+ where ORDERS.OrderID IN (SELECT ORDERID FROM @SpecialCustomers)
+
+
+'--- Using Correlated Subqueries  --------------------------------------------------
+
+'--- determining the number of rows in a table -------------------------------------
+
+  SELECT COUNT(*) FROM tablename 
+
+
+'--- end determining the number of rows in a table -------------------------------------
+
+
+'--- give or grant access to stored procedure -----------------------------------------
+
+  Grant Execute on GetUplExperianCoreExtract to public
+
+  GRANT CREATE DATABASE, CREATE TABLE
+  TO Mary, John, [Corporate\BobJ]
+
+
+'--- end give or grant access to stored procedure -------------------------------------
+
+
+'--- Set up / Installed / Configure SQL Server 2000 ------------------------------------
+
+Depending on the product you have chosen, it may be labeled Enterprise Edition, Standard Edition, 
+or Personal Edition. If you want the desktop version, install the Personal Edition. 
+For a complete description of these editions and other available editions, see SQL Server Setup/Upgrade Help, described next.
+
+
+In this section you're going to review the SQL Server Setup/Upgrade Help file (and print it if desired), 
+and then continue with the SQL Server Setup program:
+
+
+1.
+ From the SQL Server 2000 CD or network location, run Autorun.exe.
+ 
+2.
+ Click Browse Setup/Upgrade Help.
+ 
+3.
+ Review the setup instructions for SQL Server 2000. You may want to print sections of the Help for step-by-step instructions.
+ 
+4.
+ Return to the SQL Server 2000 screen, and click Install SQL Server 2000 Components.
+ 
+5.
+ Click Database server to start the setup program.
+ 
+6.
+ Select the appropriate evaluated computer, Local computer or Remote computer.
+ 
+7.
+ Click Create a new instance of SQL Server.
+ 
+8.
+ Enter your name and organization.
+ 
+9.
+ Click Yes to accept the licensing agreement.
+ 
+10.
+ Click Server and Client Tools, or Client Tools Only, as appropriate.
+ 
+11.
+ Enter an instance name, or accept the Default if available.
+ 
+12.
+ In the Setup Type screen, select Custom Setup.
+
+In the Select Components screen, make sure only the following components are selected:
+
+• For Server Components
+ 
+• SQL Server
+ 
+• Replication Support
+ 
+• For Management Tools
+ 
+• Enterprise Manager
+ 
+• Profiler
+ 
+• Query Analyzer
+ 
+• Conflict Viewer
+ 
+• For Client Connectivity (no sub-components)
+ 
+• For Books Online
+ 
+• Books Online on Disk
+ 
+ 
+13.
+ Clear any other components or sub-components if they are selected.
+ 
+14.
+ Specify an account for the SQL Server and Agent to run under. Pick an account that is only a member of the Users group. Do not select the administrator.
+ 
+15.
+ Click Windows Authentication Mode.
+ 
+16.
+ Click Named Pipes and TCIP/IP Sockets, and complete Setup.
+ 
+
+Configuring SQL Server
+After installing SQL Server 2000, make the following configuration changes:
+
+1.
+ From the SQL Server 2000 CD or network location, run Autorun.exe.
+ 
+2.
+ Add the Service account for the MSSQLServer or MSSQLServer$Instancename and SQLServerAgent services as members of the sysadmin fixed-server role. You do this through Enterprise Manager or Transact-SQL. For instructions, see "Adding a Member to a Predefined Role" in SQL Server Books Online.
+ 
+3.
+ Add the Windows NT 4.0 accounts of SQL Server Administrators as members of the sysadmin fixed server role. You do this through Enterprise Manager or Transact-SQL. For instructions, see "Adding a Member to a Predefined Role" in SQL Server Books Online.
+ 
+4.
+ Remove the BUILTIN\Administrators Login rights from SQL Server. You do this through Enterprise Manager or Transact-SQL. For instructions, see "Removing Logins and Users." To execute this Transact-SQL command from Query Analyzer, enter the following:
+
+exec sp_revokelogin [BUILTIN\Administrators]
+ 
+5.
+ Delete (or don't use) all the referenced stored procedures and tables in "Appendix, Unsupported Stored Procedures and Tables." This will remove Microsoft Meta Data Services and replication features that are not included in the evaluated configuration. Instructions for deleting these procedures appear in the Appendix.
+ 
+6.
+ Disable the data transformation services by opening Control Panel, selecting Services, selecting MSDTC, and clicking Stop. Then click Startup and click Disabled mode.
+ 
+7.
+ Add login rights and database access rights, as needed, for end users. For instructions, see "Adding a SQL Server Login" and "Granting a SQL Server Login Access to a Database" in SQL Server Books Online.
+ 
+8.
+ Delete the following registry key value by typing regedit from the Run dialog box, which is available on the Start menu. (The Windows NT C2 configuration deletes this value, but sometimes during the SQL Server/Internet Explorer installation, it is added to the Registry again.)
+
+Hive: HKEY_LOCAL_MACHINE \SYSTEM
+
+Key: \CurrentControlSet\Control\Session Manager\Environment
+
+Value Name: Os2LibPath
+ 
+'--- end Set up / Installed / Configure SQL Server 2000 ------------------------------------
+
+
+'-------- add sql server login -------------------------------------------------------------
+
+ Security Note  When possible, use Windows Authentication.
+
+ To add a SQL Server login 
+
+ Expand a server group, and then expand a server.
+
+
+ Expand Security, right-click Logins, and then click New Login.
+
+
+ In Name, enter a name for the Microsoft® SQL Server™ login.
+
+
+ Under Authentication, select SQL Server Authentication.
+
+
+ Optionally, in Password, enter a password.
+
+
+ Optionally: 
+ In Database, click the default database to which the login is connected after logging into an instance of SQL Server.
+
+
+ In Language, click the default language in which messages are displayed to the user. 
+
+
+ '... using transact sql  .... 
+
+  sp_addlogin [ @loginame = ] 'login' 
+     [ , [ @passwd = ] 'password' ] 
+     [ , [ @defdb = ] 'database' ] 
+     [ , [ @deflanguage = ] 'language' ] 
+     [ , [ @sid = ] sid ] 
+     [ , [ @encryptopt = ] 'encryption_option' ] 
+
+ ex. 1. EXEC sp_addlogin 'Victoria', 'B1r12-36'
+     2. EXEC sp_addlogin 'Albert', 'B1r12-36', 'corporate'
+  
+
+'-------- end sql server login -------------------------------------------------------------  
+
+ Sp_grantlogin
+
+'--- Change password ------------------------------------------------------------------------
+
+
+    EXEC sp_password 'MS-Outlook', 'trinity', 'brl'
+
+
+'--- end Change password ---------------------------------------------------------------------
+
+
+'--- to alter table and add another column ---------------------------------------------------
+
+  ALTER TABLE downloadtmp_217 ADD SIC1_Code int NULL
+
+
+'--- end to alter table and add another column -----------------------------------------------
+
+
+'--- end to alter table and add another column -----------------------------------------------
+
+
+
+'--- Functions with table return value  -----------------------------------------------
+
+CREATE FUNCTION dbo.AuthorsForState(@cState char(2) )
+
+  RETURNS TABLE
+
+AS
+
+ RETURN (SELECT * FROM Authors WHERE state = @cState)
+
+
+'--- end Functions with table return value  -----------------------------------------------
+
+
+
+'--- using accumulated sum  in select  -----------------------------------------------
+
+
+ 
+ iF OBJECT_ID('tempdb..#tmpPercentageHolder') IS NOT NULL
+     		DROP TABLE #tmpPercentageHolder  	 	   
+
+
+  Create Table #tmpPercentageHolder(
+			IDNo			Int Not NUll IDENTITY(1,1)
+			,PercentValue		Decimal(9,2)
+			)		
+	
+  -- Select * from #tmpPercentageHolder
+  
+
+   --- Insert value sa #tmpPercentageHolder , sample data lang to...
+
+  Declare
+	@value1		Decimal(9,2),
+	@value2		Decimal(9,2),
+	@value3		Decimal(9,2)
+	
+   set  @value1 = 0.29   -- 29%
+   set  @value2 = 0.10   -- 10%
+   set  @value3 = 0.38   -- 38%
+	
+  -- Insert the percentage value to  #tmpPercentageHolder  
+  Insert into #tmpPercentageHolder(
+	PercentValue
+		 )
+    Select  @value1
+
+  Insert into #tmpPercentageHolder(
+	PercentValue
+		 )
+    Select  @value2
+
+  Insert into #tmpPercentageHolder(
+	PercentValue
+		 )
+    Select  @value3
+
+ 
+ ... or this way ....   
+  select IDNo, 
+    PercentValue, 
+        (select sum(PercentValue) 
+   from #tmpPercentageHolder 
+   where IDNo <= b.IDNo) as accum 
+   from #tmpPercentageHolder b
+ 
+
+'--- using accumulated sum  in select  -----------------------------------------------
+
+'--- using select in string and concatenation  ----------------------------------------
+
+ declare	
+	@sqlqry		varchar(8000),
+        @tblname	varchar(2000)		
+                                       
+     set @tblname = 'interactiontrack' 
+  
+    select @sqlqry = 'select top 10 * from' + char(32) + @tblname   --> char(32) is space 
+    Exec(@sqlqry) 
+
+
+
+
+'--- end using select in string and concatenation  ------------------------------------
+
+'--- Create an index on a view   ------------------------------------------------------
+
+ G. Create an index on a view
+This example will create a view and an index on that view. Then, two queries are included using the indexed view.
+
+USE Northwind
+GO
+
+--Set the options to support indexed views.
+SET NUMERIC_ROUNDABORT OFF 
+GO 
+SET ANSI_PADDING,ANSI_WARNINGS,CONCAT_NULL_YIELDS_NULL,ARITHABORT,QUOTED_IDENTIFIER,ANSI_NULLS ON
+GO
+
+--Create view.
+CREATE   VIEW V1 
+WITH   SCHEMABINDING 
+AS 
+   SELECT SUM(UnitPrice*Quantity*(1.00-Discount)) AS Revenue, OrderDate, ProductID, COUNT_BIG(*) AS COUNT 
+   FROM   dbo.[Order Details] od, dbo.Orders o 
+   WHERE   od.OrderID=o.OrderID 
+   GROUP BY   OrderDate, ProductID
+GO
+
+--Create index on the view.
+CREATE UNIQUE CLUSTERED INDEX IV1 ON V1 (OrderDate, ProductID)
+GO
+
+--This query will use the above indexed view.
+SELECT SUM(UnitPrice*Quantity*(1.00-Discount)) AS Rev, OrderDate, ProductID
+FROM   dbo.[Order Details] od, dbo.Orders o
+WHERE   od.OrderID=o.OrderID AND ProductID in (2, 4, 25, 13, 7, 89, 22, 34)
+   AND OrderDate >= '05/01/1998'
+GROUP BY OrderDate, ProductID
+ORDER BY Rev DESC
+
+ ... or this way...........
+  
+  CREATE UNIQUE CLUSTERED INDEX employeeID_ind
+      ON emp_pay (employeeID)              --- this is unique field    
+
+
+  create nonclustered index basepay_ind    --- field with index but not unique
+     on emp_pay (base_pay)
+
+
+'--- end Create an index on a view   ------------------------------------------------------
+
+
+
+------ using sp_adduser --------------------------------------------------------------------
+
+sp_adduser [ @loginame = ] 'login' 
+    [ , [ @name_in_db = ] 'user' ] 
+    [ , [ @grpname = ] 'group' ] 
+
+
+ This example adds the Haroldq login to the current database with a username of Harold, which belongs to the fort_mudge role.
+
+   ex . EXEC sp_adduser 'Haroldq', 'Harold', 'fort_mudge'
+
+
+------ end using sp_adduser --------------------------------------------------------------------
+
+
+------- using sp_addgroup ----------------------------------------------------------------------
+
+  This example creates the group accounting.
+   EXEC sp_addgroup 'accounting'
+
+
+------- end using sp_addgroup ----------------------------------------------------------------------
+
+
+
+------- using sp_addlogin ----------------------------------------------------------------------
+
+
+This example creates an SQL Server login for the user Claire Picard, 
+ with a password of caniche, a default database of public_db, and a default language of French.
+
+  ex. EXEC sp_addlogin 'Claire Picard', 'caniche', 'public_db', 'french'
+
+
+------- end using sp_addlogin ----------------------------------------------------------------------
+
+
+------- using sp_grantlogin ------------------------------------------------------------------------
+
+  This example allows the Windows NT user Corporate\BobJ to connect to SQL Server.
+
+  EXEC sp_grantlogin 'Corporate\BobJ'
+
+------- end using sp_grantlogin --------------------------------------------------------------------- 
+
+'----- creating index -------------------------------------------------------
+
+USE AdventureWorks;
+GO
+IF EXISTS (SELECT name FROM sys.indexes
+            WHERE name = N'IX_ProductVendor_VendorID')
+    DROP INDEX IX_ProductVendor_VendorID ON Purchasing.ProductVendor;
+GO
+CREATE INDEX IX_ProductVendor_VendorID 
+    ON Purchasing.ProductVendor (VendorID); 
+GO
+
+
+CREATE UNIQUE INDEX AK_Index ON #Test (C2)
+
+
+'----- end creating index -------------------------------------------------------
+
+select
+
+       case
+
+              when   len(rtrim(ltrim(isnull(bin,'')))) < 10
+
+              then   replicate('0',10-len(rtrim(ltrim(isnull(bin,'0'))))) + rtrim(ltrim(isnull(bin,'0')))
+
+              else   bin
+
+       end    as bin,
+
+from customer with (nolock)
+
+
+
+
+create role indirect_sa_role 
+with passwd mysecretpassword
+go
+grant role sa_role to indirect_sa_role
+go
+grant role indirect_sa_role to an_innocent_login
+go
+
+
+When login an_innocent_login executes sp_kill, this stored procedure will use set role to enable indirect_sa_role (and therefore sa_role), the kill command will be executed, and the role will be disabled again. The simplified example below shows how this mechanism works: 
+
+--
+-- The basic principle...
+--
+create procedure sp_kill
+   @spid int
+as
+begin
+   -- create the 'kill' command string
+   select @killcmd = "kill" + str(@spid,5)
+
+   -- enable sa_role 
+   set role indirect_sa_role 
+   with passwd mysecretpassword on
+
+   -- issue the kill now that we have sa_role
+   execute(@killcmd)
+
+   -- disable sa_role 
+   set role indirect_sa_role off
+end
+go
+sp_hidetext sp_kill
+go
+
+'-----------------------------
+
+declare 
+	@dt_cnt   int,   ---varchar(15),
+	@cu_cnt   int,    ---varchar(15),
+        @percent_pen	decimal(6,4)
+
+ select
+      @dt_cnt = 1196394,
+      @cu_cnt = 1197090,
+      @percent_pen = (convert(decimal,@dt_cnt)/convert(decimal,@cu_cnt)) * 100.00
+  
+ select   @dt_cnt,@cu_cnt,@percent_pen
+
+-----------------------------------------------------------
+dynamic query:
+DECLARE @listCol VARCHAR(2000)
+DECLARE @query VARCHAR(4000)
+SELECT  @listCol = STUFF(( SELECT DISTINCT
+
+                                '],[' + ltrim(str(YEAR(OrderDate)))
+
+                        FROM    Sales.SalesOrderHeader
+
+                        ORDER BY '],[' + ltrim(str(YEAR(OrderDate)))
+
+                        FOR XML PATH('')
+
+                                    ), 1, 2, '') + ']'
+
+ 
+
+SET @query =
+
+'SELECT * FROM 
+
+      (SELECT CustomerID, YEAR(OrderDate) OrderYear, SubTotal
+
+            FROM Sales.SalesOrderHeader
+
+            WHERE CustomerID >=1 and CustomerID <=35) src
+
+PIVOT (SUM(SubTotal) FOR OrderYear 
+
+IN ('+@listCol+')) AS pvt'
+
+ 
+
+EXECUTE (@query)
+
+'---------------------------
+
+declare  
+  	@tkprojectid int  
+select  
+ 	@tkprojectid = convert(int,remarks1)  
+from dbo.valuemap with (nolock)  
+where  
+ 	companyid  = @companyid and  
+ 	projectid  = @projectid and  
+ 	category_code = 'variable' and  
+ 	subcategory_code = 'TKProjectID'  
+
+
+
+-------- auto no creation ----------------------------
+
+declare @recid               int,
+            @dateformat     char(8),
+            @str_rec_id       char(20)
+            
+select    @recid              = '0000',
+            @dateformat     = '20090810',
+            @str_rec_id       = ''
+
+
+if (        @recid                          is null or 
+            convert(char(20),ltrim(rtrim(@recid)))     = '' or
+            @recid                          = 0
+) begin
+            select    @str_rec_id       = @dateformat + '-0001'            
+end
+
+else begin
+            select    @str_rec_id       = @dateformat + '-' + right('0000' + ltrim(rtrim(convert(char(20),(@recid + 1)))),4)                       
+end
+
+
+select @str_rec_id
+
+-- using  coalesce ----------------- Beg
+
+,convert(money,coalesce(substring(remarks1,34,7),'0') + '.' + coalesce(substring(remarks1,42,2),'00')) as Training_Liability_Credit_Percentage,  -- 34,9
+
+-- using  coalesce ----------------- End
+
+
+---- Formula partially connected beg date and end date VS. pass beg date and pass end date
+
+beg date < end date ( end date from para meter or tmp table )
+end date > beg date ( beg date from para meter or tmp table )
+
+-- Using Primary Key and Foreign Constraint ---------------------- 
+
+-- table A
+BusinessEntityID int
+PRIMARY KEY CLUSTERED
+
+-- table B
+SalesPersonID int NULL
+REFERENCES SalesPerson(BusinessEntityID)
+
+-- using constraint -------------- Beg
+
+CREATE TABLE #tmpB
+ (
+	   cust_id            int      PRIMARY KEY,
+	   cust_name         char(50),
+	   cust_address         char(50),
+	   cust_credit_limit   money,
+	   CONSTRAINT chk_id CHECK (cust_id BETWEEN 0 and 10000 )
+ )
+
+
+-- using foreign key constraint --------
+
+CREATE TABLE part_sample
+(	
+	part_nmbr			int		PRIMARY KEY,
+	part_name			char(30),
+	part_weight			decimal(6,2),
+	part_color			char(15)
+ );
+
+
+CREATE TABLE order_part
+      (	order_nmbr      int,
+		part_nmbr      int
+         FOREIGN KEY REFERENCES part_sample(part_nmbr)
+            ON DELETE NO ACTION,
+      qty_ordered      int
+  );
+
+
+----------------------
+
+
+--- alter table ; change column length --- Beg
+ALTER TABLE  TransactionHistory 
+	ALTER COLUMN  HardwareFamily varchar(250)
+
+
+---- email ---------
+
+
+-- https://www.emailarchitect.net/easendmail/kb/sql.aspx?cat=0
+
+-- SMTP/ESMTP protocols
+-- EASendMail INstaller
+
+-- Preparing SQL Environment
+
+--sp_OACreate
+--Creates an instance of the COM object on an instance of MS SQL Server
+
+--sp_OADestroy
+--Destroys a created COM object
+
+--sp_OAGetProperty
+--Gets a property value of a COM object.
+
+--sp_OASetProperty
+--Sets a property value of a COM object to a new value.
+
+--sp_OAMethod
+--Calls a method of a COM object.
+
+--sp_OAGetErrorInfo
+--Gets the exception information from OLE automation.
+
+-- RUN
+sp_configure 'show advanced options', 1;
+GO
+RECONFIGURE;
+GO
+sp_configure 'Ole Automation Procedures', 1;
+GO
+RECONFIGURE;
+GO
+
+
+---- SQL Stored Procedure Example - Send email
+CREATE PROCEDURE [dbo].[usp_SendTextEmail]  @ServerAddr nvarchar(128),
+@From nvarchar(128),
+@To nvarchar(1024),
+@Subject nvarchar(256),
+@Bodytext nvarchar(max) = 'This is a test text email from MS SQL server, do not reply.',
+@User nvarchar(128) = '',
+@Password nvarchar(128) = '',
+@SSLConnection int = 0,
+@ServerPort int = 25
+AS
+DECLARE @hr int
+DECLARE @oSmtp int
+DECLARE @result int
+DECLARE @description nvarchar(255)
+EXEC @hr = sp_OACreate 'EASendMailObj.Mail',@oSmtp OUT
+If @hr <> 0
+BEGIN
+    PRINT 'Please make sure you have EASendMail Component installed!'
+    EXEC @hr = sp_OAGetErrorInfo @oSmtp, NULL, @description OUT
+    IF @hr = 0
+    BEGIN
+        PRINT @description
+    END
+    RETURN
+End
+EXEC @hr = sp_OASetProperty @oSmtp, 'LicenseCode', 'TryIt'
+EXEC @hr = sp_OASetProperty @oSmtp, 'ServerAddr', @ServerAddr
+EXEC @hr = sp_OASetProperty @oSmtp, 'ServerPort', @ServerPort
+EXEC @hr = sp_OASetProperty @oSmtp, 'UserName', @User
+EXEC @hr = sp_OASetProperty @oSmtp, 'Password', @Password
+EXEC @hr = sp_OASetProperty @oSmtp, 'FromAddr', @From
+EXEC @hr = sp_OAMethod @oSmtp, 'AddRecipientEx', NULL,  @To, 0
+EXEC @hr = sp_OASetProperty @oSmtp, 'Subject', @Subject
+EXEC @hr = sp_OASetProperty @oSmtp, 'BodyText', @BodyText
+If @SSLConnection > 0
+BEGIN
+    EXEC @hr = sp_OAMethod @oSmtp, 'SSL_init', NULL
+END
+/* you can also add an attachment like this */
+/*EXEC @hr = sp_OAMethod @oSmtp, 'AddAttachment', @result OUT, 'd:\test.jpg'*/
+/*If @result <> 0 */
+/*BEGIN*/
+/*   EXEC @hr = sp_OAMethod @oSmtp, 'GetLastErrDescription', @description OUT*/
+/*    PRINT 'failed to add attachment with the following error:'*/
+/*    PRINT @description*/
+/*END*/
+PRINT 'Start to send email ...'
+EXEC @hr = sp_OAMethod @oSmtp, 'SendMail', @result OUT
+If @hr <> 0
+BEGIN
+    EXEC @hr = sp_OAGetErrorInfo @oSmtp, NULL, @description OUT
+    IF @hr = 0
+    BEGIN
+        PRINT @description
+    END
+    RETURN
+End
+If @result <> 0
+BEGIN
+    EXEC @hr = sp_OAMethod @oSmtp, 'GetLastErrDescription', @description OUT
+    PRINT 'failed to send email with the following error:'
+    PRINT @description
+END
+ELSE
+BEGIN
+    PRINT 'Email was sent successfully!'
+END
+EXEC @hr = sp_OADestroy @oSmtp
+Go
+
+----------------
+
+
+-- Usage
+DECLARE 
+	@ServerAddr		nvarchar(128),		-- SMTP Server Address		
+	@From			nvarchar(128),		-- email address of sender
+	@To				nvarchar(1024),		-- email address of receipient
+	@Subject		nvarchar(256),
+	@Bodytext		nvarchar(512),
+	@User			nvarchar(128),
+	@Password		nvarchar(128),
+	@SSL			int
+
+
+Set @ServerAddr = 'smtp.emailarchitect.net'
+Set @From = 'test@emailarchitect.net'
+
+/*You can input multiple recipients and use comma (,) to separate multiple addresses */
+Set @To = 'support@emailarchitect.net'
+Set @Subject = 'simple email from SQL server'
+Set @BodyText = 'This is a test text email from MS SQL server, do not reply.'
+/*User and password for ESMTP authentication, if your server doesn't require
+
+User authentication, please set @User and @Password to '' */
+Set @User = 'test@emailarchitect.net'
+Set @Password = 'testpassword'
+
+/* If your smtp server requires SSL connection, please set @SSL = 1*/
+Set @SSL = 0
+
+exec usp_SendTextEmail @ServerAddr, @From, @To, @Subject, @BodyText, @User, @Password, @SSL
+
+-----------
+
+-- otherway
+
+EXEC msdb.dbo.sysmail_add_account_sp
+    @account_name = 'SendEmailSqlDemoAccount'
+  , @description = 'Sending SMTP mails to users'
+  , @email_address = 'blacson.@gmail.com'
+  , @display_name = 'Suraj Sahoo'
+  , @replyto_address = 'blacson.@gmail.com'
+  , @mailserver_name = 'smtp.gmail.com'
+  , @port = 587
+  , @username = 'sa'
+  , @password = 'P@$$w0rd!@#'
+Go
+
+-------------------------------------------------------------------------------------------------------------------------
+
+EXEC msdb.dbo.sp_send_dbmail
+    @profile_name = 'SendEmailSqlDemo2'
+  , @recipients = 'blacson.bl@gmail.com'
+  , @subject = 'Automated Test Results (Successful)'
+  , @body = 'The stored procedure finished successfully.'
+  , @importance ='HIGH' 
+GO
+
+---------------------------------------------------------------------------------------------------------------------------
+
+GRANT SELECT,UPDATE,INSERT,DELETE ON SCHEMA::dbo TO user;
+
+----------------------------------------------------------------------------------------------------------------------------
+
+C:\Program Files (x86)\Microsoft SQL Server\MSSQL12.DEVFUND\MSSQL\DATA
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+--- create user devgrps with select / readonly  ---------------------- 
+
+create login devgrps
+with password = 'devgrps1234'
+USE main; -- database main
+CREATE USER devgrps FOR LOGIN devgrps;
+
+grant select to  devgrps
+
+
+
+--- Creating master key and certificates -------------------------------------------------------------------- Beg
+
+ http://www.sqlservercentral.com/articles/Database+Master+Key+(DMK)/107787/
+
+
+ USE testdb
+ GO
+ CREATE MASTER KEY ENCRYPTION BY PASSWORD = 'Password123!'
+
+ -- There is already a master key in the database. Please drop it before performing this statement
+
+ -- verify
+ select * from sys.symmetric_keys
+
+-- verify the master key was created and encrypted by the service key
+ Select name, is_master_key_encrypted_by_server from sys.databases where name = 'testdb'
+
+
+ -- create a certificate, this will be use to encrypt the symmetric key
+ CREATE certificate TestCert01 WITH subject 'TestEncryptionCert'
+
+
+ --
+ select * from sys.certificates
+
+
+ -- create a symmetric key
+ Create symmetric KEY testSymKey01 WITH algorithm = AES_256,key_source = 'key_iotp',
+ identity_value = 'testSymKey01' encryption By certificate TestCert01
+
+ --
+
+ select * from sys.symmetric_keys
+
+-- fun part ; encrypt and decryp data
+create table EncyptionTest(
+	Id int identity(1,1),
+	LastName varchar(25),
+	SSN varchar(50),
+	EncryptedSSN varbinary(128) 
+
+)
+ 
+--- Insert data
+insert into EncyptionTest(LastName,SSN)
+values('Smith','000-00-0001'),('Stanley','000-00-0022')
+
+
+-- Open the symmetric key
+OPEN symmetric key testSymKey01 decryption by certificate TestCert01
+
+
+-- open the symmetric key so that can use the function ENCRYPBYKEY
+update EncryptionTest
+Set EncryptedSSN = ENCRYPTBYKEY(key_GUID('testSymKey01',SSN)
+
+
+OR...
+update EncryptionTest
+Set EncryptedSSN = ENCRYPTBYKEY(key_GUID('SSN_Key_01'),SSN)
+
+OR...
+update EncryptionTest
+Set EncryptedSSN = ENCRYPTBYKEY(key_GUID('MainSymKey01'),SSN)
+
+
+
+-- close 
+CLOSE symmetric key testSymKey01
+
+
+-- open symmetric key to decrypt
+OPEN symmetric key testSymKey01 decryption by certificate  TestCert01
+
+
+-- decrypt
+Select LastName, Convert(varchar,DecryptByKey(EncryptedSSN) from EncyptionTest
+
+--- Creating master key and certificates -------------------------------------------------------------------- End
+
+
+
+--- BACKUP Database -------------------------------------------- Beg
+---- BACKUP DATABASE and Log
+ -- C:\BackupDB
+ use master
+ --
+ alter database SMSC
+  set recovery FULL
+
+ -- Create SMSCData and SMSCLog logical backup devices 
+ USE master  
+ GO  
+ EXEC sp_addumpdevice 'disk', 'SMSCData3',   
+ 'C:\BackupDB\SMSCData3.bak';  
+
+ GO  
+ EXEC sp_addumpdevice 'disk', 'SMSCLog3',   
+ 'C:\BackupDB\SMSCLog3.bak';  
+ GO  
+
+ -- backup the FULL SMSC database
+ Backup database SMSC to  SMSCData3
+
+ -- Back up the SMSC log.  
+ BACKUP LOG SMSC  
+  TO SMSCLog3;  
+ GO  
+
+--- BACKUP Database -------------------------------------------- End
+
+--- Differential Backup
+ EXEC sp_addumpdevice 'disk', 'SMSCData3Diff',   
+  'C:\BackupDB\SMSCData3Diff.bak';  
+Backup Database SMSC to SMSCData3Diff 
+   With Differential
+------------------------------------------------------------------
+
+-- RESTORE DATABASE
+-- note run this sabay sabay:
+ Restore Database SMSF
+ FROM  SMSFData3
+ WITH NoRecovery
+ GO
+
+ Restore LOG SMSF
+ FROM  SMSFLog3
+ WITH FILE = 1,
+      NoRecovery;
+  GO
+ 
+ Restore Database SMSF
+ FROM  SMSFData3Diff
+ WITH NoRecovery
+ GO
+
+ Restore Database SMSF
+ WITH Recovery
+ GO
+
+------------------------------------------------------------------------------------------------------------
+
+-- TRIGGER --------------------------------------------------------------------------------
+-- AFTER INSERT
+CREATE TRIGGER [dbo].[Customer_INSERT]
+       ON [dbo].[Customers]
+AFTER INSERT
+AS
+BEGIN
+       SET NOCOUNT ON;
+ 
+       DECLARE @CustomerId INT
+ 
+       SELECT @CustomerId = INSERTED.CustomerId       
+       FROM INSERTED
+ 
+       INSERT INTO CustomerLogs
+       VALUES(@CustomerId, 'Inserted')
+END
+
+
+-- AFTER UPDATE -----------------------------
+
+CREATE TRIGGER [dbo].[Customer_UPDATE]
+       ON [dbo].[Customers]
+AFTER UPDATE
+AS
+BEGIN
+       SET NOCOUNT ON;
+ 
+       DECLARE @CustomerId INT
+       DECLARE @Action VARCHAR(50)
+ 
+       SELECT @CustomerId = INSERTED.CustomerId       
+       FROM INSERTED
+ 
+       IF UPDATE(Name)
+       BEGIN
+              SET @Action = 'Updated Name'
+       END
+ 
+       IF UPDATE(Country)
+       BEGIN
+              SET @Action = 'Updated Country'
+       END
+ 
+       INSERT INTO CustomerLogs
+       VALUES(@CustomerId, @Action)
+END
+
+---------------------------------------------------------------------------------------
+
+-- CREATING VIEW ----------------------------------------------------------------------
+create view vwMessageReceiver
+
+as
+	Select
+		Id,
+		Header,
+		Body,
+		DateReceived,
+		IsRead,
+		UpdatedBy,
+		DateUpdated,
+		Sender,
+		Receiver,
+		Port,
+		Url
+ 	from  dbo.MessageReceiver 	
+
+Go
+-------------------------------------------------------------------------------------------
+
+--- ENABLE xp_cmdshell ; if encounter error in command xp_cmdshell ------------------------
+GO
+EXEC master.dbo.sp_configure 'xp_cmdshell', 0
+RECONFIGURE WITH OVERRIDE
+
+GO
+
+EXEC master.dbo.sp_configure 'show advanced options', 0
+RECONFIGURE WITH OVERRIDE
+GO
+
+-- Enable
+Use Master
+GO
+EXEC master.dbo.sp_configure 'show advanced options', 1
+RECONFIGURE WITH OVERRIDE
+GO
+
+EXEC master.dbo.sp_configure 'xp_cmdshell', 1
+RECONFIGURE WITH OVERRIDE
+GO
+
+-----------------------------------------------------------------------------------------------
+
+-- get the list of database --------------------------------------------- Beg
+
+SELECT name FROM master.dbo.sysdatabases
+
+-- get the list of database --------------------------------------------- End
+
+select 
+    f.type_desc as [Type]
+    ,f.name as [FileName]
+    ,fg.name as [FileGroup]
+    ,f.physical_name as [Path]
+    ,f.size / 128.0 as [CurrentSizeMB]
+    ,f.size / 128.0 - convert(int,fileproperty(f.name,'SpaceUsed')) / 
+        128.0 as [FreeSpaceMb]
+from 
+    sys.database_files f with (nolock) 
+	left outer join sys.filegroups fg with (nolock) on
+          f.data_space_id = fg.data_space_id
+option (recompile)
+
+------------------------------------------------------------------------------
+
+USE SMS1;  
+GO  
+EXEC sp_estimate_data_compression_savings 'LogMessageReceiveHistory', 'TransactionHistory', NULL, NULL, 'ROW' ;  
+
+
+ALTER TABLE Production.TransactionHistory REBUILD PARTITION = ALL  
+WITH (DATA_COMPRESSION = ROW);   
+GO
+-----------------------------
+
+-- DATA COMPRESSION ---------------------------------------------------------- Beg
+http://www.informit.com/articles/article.aspx?p=1946159&seqNum=6
+  -- Creating a Table with Row Compression Enabled
+       CREATE TABLE <Table Name>
+        (<Column 1. int, <Column 2> nvarchar(50) )
+       WITH (DATA_COMPRESSION = ROW);
+      GO
+
+   Creating a Table with Page Compression Enabled
+   CREATE TABLE <Table Name>
+(<Column 1. int, <Column 2> nvarchar(50) )
+WITH (DATA_COMPRESSION = PAGE);
+GO
+
+The following Transact-SQL syntax illustrates compressing the Sales Order Detail table in the 
+AdventureWorks2012 database by the page compression setting:
+
+  USE [AdventureWorks2012]
+  ALTER TABLE [Sales].[SalesOrderDetail]
+  REBUILD PARTITION = ALL
+ WITH
+  (  DATA_COMPRESSION = PAGE  )
+
+
+-- DATA COMPRESSION ---------------------------------------------------------- End
+
+--- DROP INDEX  ---------------------------------------------- Beg
+DROP INDEX ix_messageReceiver_IsRead   
+    ON dbo.MessageReceiver;  
+GO  
+--- DROP INDEX  ---------------------------------------------- End
+
+
+--- DERAGMENTATION OF TABLES ---------------------------------------------- Beg
+-- Analyze
+SELECT dbschemas.[name] AS 'Schema',
+dbtables.[name] AS 'Table',
+dbindexes.[name] AS 'Index',
+indexstats.avg_fragmentation_in_percent AS 'Frag (%)',
+indexstats.page_count AS 'Page count'
+
+FROM sys.dm_db_index_physical_stats (DB_ID(), NULL, NULL, NULL, NULL) AS indexstats
+INNER JOIN sys.tables dbtables ON dbtables.[object_id] = indexstats.[object_id]
+INNER JOIN sys.schemas dbschemas ON dbtables.[schema_id] = dbschemas.[schema_id]
+INNER JOIN sys.indexes AS dbindexes ON dbindexes.[object_id] = indexstats.[object_id]
+AND indexstats.index_id = dbindexes.index_id
+WHERE indexstats.database_id = DB_ID()
+
+ORDER BY indexstats.avg_fragmentation_in_percent DESC
+---
+-- Find the average fragmentation percentage of all indexes  
+-- in the dbo.MessageReceiver table.   
+	USE SMS1;  
+	GO  
+	SELECT a.index_id, name, avg_fragmentation_in_percent  
+	FROM sys.dm_db_index_physical_stats (DB_ID(N'SMS1'), 
+      		OBJECT_ID(N'dbo.MessageReceiver'), NULL, NULL, NULL) AS a  
+    	JOIN sys.indexes AS b 
+      	ON a.object_id = b.object_id AND a.index_id = b.index_id;   
+	GO  
+
+-- Reorganize all indexes on the dbo.MessageReceiver table. 
+USE SMS1;   
+GO  
+ALTER INDEX ALL ON  dbo.MessageReceiver  
+REORGANIZE ;   
+GO
+
+-- To rebuild fragmented Index
+USE AdventureWorks2012;
+GO
+ALTER INDEX PK_Employee_BusinessEntityID ON dbo.MessageReceiver
+REBUILD;
+GO
+
+-- To rebuild all indexes in a table
+USE SMS1;
+GO
+ALTER INDEX ALL ON dbo.MessageReceiver
+REBUILD WITH (FILLFACTOR = 80, SORT_IN_TEMPDB = ON,
+              STATISTICS_NORECOMPUTE = ON);
+GO
+
+--- DERAGMENTATION OF TABLES ---------------------------------------------- End
+
+--- DELETING LOG FILES -------------------------------------------------------------- Beg
+
+-- create database with two log files
+USE [master]
+GO
+
+CREATE DATABASE [TestDB]
+ ON  PRIMARY 
+( NAME = N'TestDB', FILENAME = N'D:\SQL DATA\TestDB.mdf' , SIZE = 4096KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+ LOG ON 
+( NAME = N'TestDB_log1', FILENAME = N'D:\SQL DATA\TestDB_log1.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%), 
+( NAME = N'TestDB_log2', FILENAME = N'D:\SQL DATA\TestDB_log2.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+GO
+
+USE TestDB
+GO
+
+CREATE TABLE TestTable
+(
+	ID INT IDENTITY(1,1),
+	Value BIGINT
+)
+
+
+--Change recovery model for TestDB to FULL (if your model database is in FULL recovery model, TestDB has been already created in this mode)
+ALTER DATABASE TestDB SET RECOVERY FULL 
+
+--- DELETING LOG FILES -------------------------------------------------------------- End
+
+-- SOLUTION after log file is removed from multiple ldf file.
+-- Detach the database with following parameter:@keepfulltextindexfile=N’false’ and reattached it. ---- Beg
+-- example:
+ 	USE [master]
+ 	GO
+ 	EXEC master.dbo.sp_detach_db @dbname = N'DatabaseName', @keepfulltextindexfile=N'false'
+ 	GO
+
+-- Detach the database with following parameter:@keepfulltextindexfile=N’false’ and reattached it. ---- End
+
+--- USING PAGINATION ------------ ------------------- Beg
+DECLARE 
+	@PageNumber AS INT, 
+	@RowspPage AS INT
+
+SET @PageNumber = 3
+SET @RowspPage = 10 72   
+
+select
+*
+from dbo.MessageReceiveHistory with (nolock)
+order by Id
+OFFSET ((@PageNumber - 1) * @RowspPage) ROWS
+FETCH NEXT @RowspPage ROWS ONLY;
+
+--- USING PAGINATION ------------ ------------------- End
+------------------------------------------------------------------------------------------------------------
+uploader error: run at db server
+1. c:\AccessDatabaseEngine_X64 /passive
+2. share full access folder  ==>   C:\WebApp\SMS\SMS\uploaded at server 172.72.0.42       ; \\TZ17-IOTPAPP2\uploaded
+
+select [F1],[F2],[F3],[F4],[F5],[F6],[F7],[F8],[F9] FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0','Excel 12.0;IMEX=1;HDR=No;DATABASE=\\TZ17-IOTPAPP2\uploaded\BankAccountDataForUpload.xls ', 'Select [F1],[F2],[F3],[F4],[F5],[F6],[F7],[F8],[F9] from [Main$] ')
+-- solution ; excel error
+
+https://www.aspsnippets.com/Articles/The-OLE-DB-provider-Microsoft.Ace.OLEDB.12.0-for-linked-server-null.aspx
+sp_configure 'show advanced options', 1;
+GO
+RECONFIGURE;
+GO
+sp_configure 'Ad Hoc Distributed Queries', 1;
+GO
+RECONFIGURE;
+GO
+EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'AllowInProcess', 1
+GO
+EXEC master.dbo.sp_MSset_oledb_prop N'Microsoft.ACE.OLEDB.12.0', N'DynamicParameters', 1
+GO
+
+
+https://stackoverflow.com/questions/13811179/where-how-can-i-download-and-install-the-microsoft-jet-oledb-4-0-for-windows-8
+
+------------------------------------------------------------------------------------------------------------
+https://appuals.com/solved-how-to-fix-error-0x80004005/
+https://serverfault.com/questions/799385/iis-not-able-to-access-shared-network-folder
+
+--------------
+exec dbo.uspCleanMessagesByReceiver '66983475520','V'
+exec dbo.uspGetMessageAndRequestOTPDetailsByPhone '66983475520'
+exec dbo.uspUpdMessageReceiverScrapSwitch 0,'84931434727','N' 
+
+
+2.0.42/usersbanklogwithactivityrpt.aspx
+Activity Operator Bank logs
+
+http://localhost:8090/-rev
+
+-------------------------------
+
+C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE
+
+-------------------------------
+
+Transfer Message To History By Phone No.
+View Message and OTP Request By Phone No.
+Update Message Receiver Scraper Switch 
+Delete Logs By User Name MessageCatcher
+View Scraper Request 
+OTP Process Simulation Checking
+
+begin transaction
+
+delete tm
+from dbo.TextMessage tm
+
+commit transaction
+
+UserLogReport
+BankActivationTransaction
+BankAccountLog
+ExceptionLogger
+Logger
+
+----------------------------------------------------------------------------------------------------------------
+declare		@date_today		datetime
+
+select	@date_today = GETDATE() 
+
+select
+	id,
+	Case
+		When	(
+			    DATEDIFF(second,mr.DateReceived,@date_today)
+			) >= 300
+		then	'Y'    	-- for update
+		else	'N' 	-- not for update	
+	end as 'Indicator' 	 
+from 	dbo.mr with (nolock)
+order by id desc
+
+---------------------------------------------------------------------------------------------------------------
+
+exec dbo.uspCleanMessagesByReceiver '66983475520','V'
+exec dbo.uspGetMessageAndRequestOTPDetailsByPhone '84763979681' - 84763979681
+exec dbo.uspUpdMessageReceiverScrapSwitch 0,452343453,'N','N'
+exec dbo.uspDelUsersAuditTrailByUsrMsgCatcher 'Y'
+exec dbo.uspUpdScrapSwitchById 23423
+exec dbo.uspViewScraperRequestNewAgent
+exec dbo.updUserUnlockAndResetPassword '@UserName','@ModeSw'  -- if A ( unlock the user) ; B ( reset password )
+
+Exec dbo.spGetOTPMessageForAPIRMB '@phoneno','@acctno','@processreqid','@referenceno'
+Exec dbo.spGetOTPMessageForAPIIDR '@phoneno','@acctno','@processreqid','@referenceno'
+Exec dbo.spGetOTPMessageForAPITHB '60109552934','151605050877','testonly','NONE'
+Exec dbo.spGetOTPMessageForAPIMYR '60109552934','151605050877','testonly','NONE'
+Exec dbo.spGetOTPMessageForAPIVND '84868421387','31710000094773','testsimulation','none'
+
+Exec dbo.uspSKRecords '@year_to_safekeep','BRL','N','@MessageReceiveHistorySw','@BankAccountLogSw','@BankTransactionDetailsSw','@BankActivationTransactionSw',
+                      '@CallBalanceLogSw','@ExceptionLoggerSw','@LoggerSw','@OperatorLogReportSw','@UserLogReportSw','@LogMessageReceiveHistorySw','@LogMessageReceiverSw',
+					  '@UsersAuditTrailSw','@RequestOTPDetailsSw','@MessageReceivedSw','@ScrapperRequestsSw','@TextMessageYSw','@date_from','@date_to' 
+
+
+Exec dbo.uspSKRecords '','BRL','N','@MessageReceiveHistorySw','@BankAccountLogSw','@BankTransactionDetailsSw','@BankActivationTransactionSw',
+                      '@CallBalanceLogSw','@ExceptionLoggerSw','@LoggerSw','@OperatorLogReportSw','@UserLogReportSw','@LogMessageReceiveHistorySw','@LogMessageReceiverSw',
+					  '@UsersAuditTrailSw','@RequestOTPDetailsSw','Y','@ScrapperRequestsSw','@TextMessageYSw','2019-03-01 00:00:00 AM','2019-03-07 23:59:59 PM' 
+
+
+-- get test account
+select
+	DIstinct
+	PhoneNo
+from dbo.bankAccount
+where UserGroupId = 26 and
+	Discontinued <> 1
+
+
+select
+DISTINCT
+dv.Name				as DeviceNo,
+ba.Port				as Port,
+''''+ba.PhoneNo		as PhoneNo,
+''''+ba.Account	as AccountNo,
+ ba.Status
+from dbo.bankAccount ba with (nolock)
+left join dbo.Device dv with (nolock) on
+	dv.id = ba.DeviceId and
+	dv.Discontinued <> 1
+where	ba.Status =1 and
+		ba.Discontinued <> 1	
+order by dv.Name,port
+
+--------------------------------------
+
+--BEGIN TRANSACTION
+
+select *
+  --update urs set  Password = '7NoqoH5VmdNXfGRYThEU3w==',NumPasswordTried=0
+from	dbo.Users urs
+where	urs.UserName = ''
+
+-- COMMIT TRANSACTION  
+
+---------------------------------------------
+
+3	IDR
+4	MYR
+12	VND
+14	RMB
+15	THB
+
+select
+'THB TRansaction' as 'TransactionCurrency',
+*
+from dbo.RequestOTPDetails with (Nolock)
+where PhoneNo in (
+			select
+			PhoneNo
+			from dbo.bankAccount with (nolock)
+			where CurrencyId = 15 and
+				Discontinued <> 1 and
+				Status = 1
+
+				) and
+   ProcessStatus = 'Success' and
+   ( DateCreated between '2019/04/22 00:00:00 AM' and '2019/04/22 23:59:59 PM' )  and
+   RequestId <> 'test_simulation'
+   order by DateCreated desc
+
+---------------------------------------------------------------------------------------------
+
+if not exists (select * from master.dbo.syslogins where
+                   loginname = @loginame and isntname = 0)
+begin
+	raiserror(15007,-1,-1,@loginame)
+	return (1)
+end
+
+------------------------------------------------------------
+	
+	string tmpSender = string.Empty;
+	string phoneReceiver = string.Empty;
+	string tmpPhoneReceiver = string.Empty;
+	string conctmp = string.Empty;
+	string concPhoneReceiver = string.Empty;
+	string phoneSender = string.Empty;
+	string phonePort = string.Empty;
+	string tmpS = string.Empty;
+	string concSender = string.Empty;
+	
+	string tmpQryString = string.Empty;
+	
+	var location = new Uri($"{Request.Scheme}://{Request.Host}{Request.Path}{Request.QueryString.ToString().Replace("%20", "_").Replace(" ", "_")}");
+	var url = location.AbsoluteUri;
+	
+	string  stringUriQuery = location.Query.ToString().Replace("%20", "_").Replace(" ", "_").Trim();
+				
+	string[] arrUriParams = new string[5];
+	string Sender = string.Empty;
+	string[] arrSender = new string[2];
+
+	if (stringUriQuery.Trim().Length > 0)
+	{
+		arrUriParams = stringUriQuery.Split("=");
+		Sender = arrUriParams[4];
+		arrSender = Sender.Split("&");
+		Sender = arrSender[0];
+
+		phoneReceiver = arrUriParams[5];
+	}
+
+	var Header = Request.Headers;
+	
+	var FinalBody = Request.Body;
+	var FinalBody2 = FinalBody.ToString().Replace("'", "`");
+
+	var SaveMessage = RecordGetterMessageCatcher.SaveMessageAsync(Header.ToString(), FinalBody2, phoneReceiver, Sender, "100", url);
+
+	return View();
+-----------------------------------------------------------------------------------------------------------------
+
+
+
+
+
