@@ -1,7 +1,7 @@
 -- using BULK Insert ; text file
 -- note in the text file exclude the column name only records itself
 -- sample records
-1,Lacson,Bernard,sdf
+1,Lacson,Bernardo...
 2,Lacson,John,sdfsd
 3,Lacson,Aiah,sdfsad
 4,Lacson,Ronald,sdfsd
@@ -899,25 +899,25 @@ ltrim(rtrim(right(adds,len(adds)-charindex(char(13),adds,charindex(char(13),adds
 ---- copying table from one database to another database ------------------
 
 
-–Switch Context to target database
+Â–Switch Context to target database
 
-Use TestDB  —Use Target database name here
+Use TestDB  Â—Use Target database name here
 
 Go
 
-–Create required schema in target database
+Â–Create required schema in target database
 
 Create Schema Purchasing
 
 Go
 
-–Switch Context to Source Database
+Â–Switch Context to Source Database
 
 Use AdventureWorks
 
 Go
 
-—Following statement copies the table from source to target database
+Â—Following statement copies the table from source to target database
 
 Select *
 
@@ -1176,7 +1176,7 @@ Begin Transaction
 '--------------------------------------------------------------------------------------------------------
 '-- Using Right Join to find records 
 
-•	Select command to find records present in Join  tblStoreMasterList b  but not in 
+Â•	Select command to find records present in Join  tblStoreMasterList b  but not in 
    tblStoresBuy a
 
 SELECT 
@@ -2416,7 +2416,7 @@ having (grouping(personid) = 0 And Grouping(firstname) = 1 And
    WHERE titleauthor.au_id = authors.au_id)
 
  The above subquery in this statement cannot be evaluated independently of the outer query. 
- It needs a value for authors.au_id, but this value changes as Microsoft® SQL Server™ examines different rows in authors.
+ It needs a value for authors.au_id, but this value changes as MicrosoftÂ® SQL ServerÂ™ examines different rows in authors.
 
  USE pubs
  SELECT distinct pub_name
@@ -2518,27 +2518,27 @@ and then continue with the SQL Server Setup program:
 
 In the Select Components screen, make sure only the following components are selected:
 
-• For Server Components
+Â• For Server Components
  
-• SQL Server
+Â• SQL Server
  
-• Replication Support
+Â• Replication Support
  
-• For Management Tools
+Â• For Management Tools
  
-• Enterprise Manager
+Â• Enterprise Manager
  
-• Profiler
+Â• Profiler
  
-• Query Analyzer
+Â• Query Analyzer
  
-• Conflict Viewer
+Â• Conflict Viewer
  
-• For Client Connectivity (no sub-components)
+Â• For Client Connectivity (no sub-components)
  
-• For Books Online
+Â• For Books Online
  
-• Books Online on Disk
+Â• Books Online on Disk
  
  
 13.
@@ -2604,7 +2604,7 @@ Value Name: Os2LibPath
  Expand Security, right-click Logins, and then click New Login.
 
 
- In Name, enter a name for the Microsoft® SQL Server™ login.
+ In Name, enter a name for the MicrosoftÂ® SQL ServerÂ™ login.
 
 
  Under Authentication, select SQL Server Authentication.
@@ -3636,14 +3636,14 @@ ALTER DATABASE TestDB SET RECOVERY FULL
 --- DELETING LOG FILES -------------------------------------------------------------- End
 
 -- SOLUTION after log file is removed from multiple ldf file.
--- Detach the database with following parameter:@keepfulltextindexfile=N’false’ and reattached it. ---- Beg
+-- Detach the database with following parameter:@keepfulltextindexfile=NÂ’falseÂ’ and reattached it. ---- Beg
 -- example:
  	USE [master]
  	GO
  	EXEC master.dbo.sp_detach_db @dbname = N'DatabaseName', @keepfulltextindexfile=N'false'
  	GO
 
--- Detach the database with following parameter:@keepfulltextindexfile=N’false’ and reattached it. ---- End
+-- Detach the database with following parameter:@keepfulltextindexfile=NÂ’falseÂ’ and reattached it. ---- End
 
 --- USING PAGINATION ------------ ------------------- Beg
 DECLARE 
