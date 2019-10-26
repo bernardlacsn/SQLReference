@@ -103,14 +103,6 @@ select
 	'_' +  Replace(convert(varchar(12),getdate(),114),':','_')
 
 
-sdfsadfsadfsdf
-JRA sadfasdfasdfasdfasdfsadf
-bernal sadfasdfs
-sad BernieSky1220$|fasdfasdfasdfasdf
-sadfasdfasdfsdfasdfsadfasdfsadfasdfasdfasdfasdfasfdasdf
-sdfsdfsdpppPassword : 3QUzJY!nO!CYdsXp  ==> pa change dito P@$$w0rdIOTP
-sdfasdfsadfsdfasdfasdfasdfasdfasdfasdfasdf
-
 ------------------------------------------------------------------------
 select top 10 a.*, b.*
 	from
@@ -140,7 +132,7 @@ SQL Site for learning --------------------------------
 SQL Site for learning --------------------------------
 
 
-GRANT EXEC ON dbo.fn_GetSubcategoryDesc2 TO taw_web_updater, cc60_1
+GRANT EXEC ON dbo.fn_GetSubcategoryDesc2 TO username, dbname
 
 -------------------------
 
@@ -465,10 +457,7 @@ SELECT *
 --SELECT IsIdentity=COLUMNPROPERTY(id, name, 'IsIdentity') 
   --              FROM syscolumns WHERE OBJECT_NAME(id) = 'OEDashBoard2' 
 
-
- GRANT EXEC ON dbo.getInteractionScheduleByCandidateInteractionType TO taw_web_updater, cc60_1
-
-
+ 
 -- Verify that the stored procedure does not exist.
 IF OBJECT_ID ( N'usp_ExampleProc', N'P' ) IS NOT NULL 
     DROP PROCEDURE usp_ExampleProc;
