@@ -1,7 +1,7 @@
 -- using BULK Insert ; text file
 -- note in the text file exclude the column name only records itself
 -- sample records
-1,Lacson,Bernard,Razon in local
+1,Lacson,Bernard,Razon in local....
 2,Lacson,John,sdfsd
 3,Lacson,Aiah,sdfsad
 4,Lacson,Ronald,sdfsd
